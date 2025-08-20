@@ -7,15 +7,15 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function show()
+    public function show($id)
     {
-        $user = User::findOrFail(Auth::id());
+        $user = User::findOrFail($id);
         return response()->json($user);
     }
 
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        $user = User::findOrFail(Auth::id());
+        $user = User::findOrFail($id);
         $data = $request->validate([
             'name' => 'string|max:255',
             'email' => 'email',
@@ -24,9 +24,9 @@ class UserController extends Controller
         return response()->json($user);
     }
 
-    public function destroy()
+    public function destroy($id)
     {
-        $user = User::findOrFail(Auth::id());
+        $user = User::findOrFail($id);
         $user->delete();
         return response()->json(['message' => 'User deleted']);
     }

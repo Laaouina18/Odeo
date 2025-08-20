@@ -8,6 +8,13 @@ use Throwable;
 class Handler extends ExceptionHandler
 {
     /**
+     * Return JSON error for unauthenticated API requests
+     */
+    protected function unauthenticated($request, \Illuminate\Auth\AuthenticationException $exception)
+    {
+        return response()->json(['error' => 'Unauthenticated'], 401);
+    }
+    /**
      * The list of the inputs that are never flashed to the session on validation exceptions.
      *
      * @var array<int, string>

@@ -13,11 +13,10 @@ const Profile = () => {
   const [edit, setEdit] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-    getClientProfile()
-      .then(data => setProfile(data))
-      .catch(() => setError('Erreur chargement profil'))
-      .finally(() => setLoading(false));
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setProfile(JSON.parse(storedUser));
+    }
   }, []);
 
   const handleChange = (e) => {
@@ -31,15 +30,9 @@ const Profile = () => {
     try {
       const updated = await updateClientProfile(profile);
       setProfile(updated);
+      localStorage.setItem('user', JSON.stringify(updated));
       setSuccess('Profil mis à jour !');
       setEdit(false);
-      // Update localStorage so Navbar reflects changes
-      const user = JSON.parse(localStorage.getItem('user'));
-      if (user) {
-        user.name = updated.name;
-        user.email = updated.email;
-        localStorage.setItem('user', JSON.stringify(user));
-      }
     } catch {
       setError('Erreur mise à jour profil');
     } finally {
@@ -53,6 +46,7 @@ const Profile = () => {
     try {
       await deleteClientProfile();
       setSuccess('Profil supprimé');
+      localStorage.removeItem('user');
       // Redirection ou déconnexion à implémenter
     } catch {
       setError('Erreur suppression profil');
