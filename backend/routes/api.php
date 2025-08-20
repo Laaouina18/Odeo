@@ -38,9 +38,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/bookings/{id}/status', [App\Http\Controllers\BookingController::class, 'updateStatus']);
 });
 
-// Payment
-Route::middleware('auth:sanctum')->post('/payment', [App\Http\Controllers\PaymentController::class, 'processPayment']);
-Route::middleware('auth:sanctum')->get('/invoice/{bookingId}', [App\Http\Controllers\PaymentController::class, 'generateInvoice']);
+
+// Profile CRUD
+Route::middleware('auth:sanctum')->group(function () {
+    // Agency profile
+    Route::get('/agency/profile', [App\Http\Controllers\AgencyController::class, 'show']);
+    Route::put('/agency/profile', [App\Http\Controllers\AgencyController::class, 'update']);
+    Route::delete('/agency/profile', [App\Http\Controllers\AgencyController::class, 'destroy']);
+    // Client profile
+    Route::get('/client/profile', [App\Http\Controllers\UserController::class, 'show']);
+    Route::put('/client/profile', [App\Http\Controllers\UserController::class, 'update']);
+    Route::delete('/client/profile', [App\Http\Controllers\UserController::class, 'destroy']);
+});
 
 // Analytics
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
