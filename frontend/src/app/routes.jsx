@@ -9,12 +9,17 @@ import ServiceDetail from '../pages/client/ServiceDetail';
 import Booking from '../pages/client/Booking';
 import Payment from '../pages/client/Payment';
 import Confirmation from '../pages/client/Confirmation';
+import ConfirmationPage from '../pages/client/ConfirmationPage';
+import QuickBooking from '../pages/client/QuickBooking';
+import DirectBooking from '../pages/client/DirectBooking';
 import ClientDashboard from '../pages/client/Dashboard';
+import ClientReservations from '../pages/client/Reservations';
 import Favorites from '../pages/client/Favorites';
 import Reviews from '../pages/client/Reviews';
 import Profile from '../pages/client/Profile';
 import AgencyDashboard from '../pages/agency/Dashboard';
 import AgencyServices from '../pages/agency/Services';
+import AgencyReservations from '../pages/agency/Reservations';
 import ServiceForm from '../pages/agency/ServiceForm';
 import ServiceList from '../pages/services/ServiceList';
 import AgencyBookings from '../pages/agency/Bookings';
@@ -35,14 +40,19 @@ const AppRoutes = () => (
   <Route path="/services/manage" element={<ServiceList />} />
     <Route path="/services/:id" element={<ServiceDetail />} />
     <Route path="/booking/:serviceId" element={<Booking />} />
+    <Route path="/direct-booking/:serviceId" element={<DirectBooking />} />
+    <Route path="/quick-booking/:serviceId" element={<QuickBooking />} />
     <Route path="/payment/:bookingId" element={<Payment />} />
     <Route path="/confirmation/:bookingId" element={<Confirmation />} />
+    <Route path="/confirmed/:bookingId" element={<ConfirmationPage />} />
   <Route path="/client/dashboard" element={<ClientDashboard />} />
+  <Route path="/client/reservations" element={<ClientReservations />} />
   <Route path="/client/favorites" element={<Favorites />} />
   <Route path="/client/reviews" element={<Reviews />} />
   <Route path="/client/profile" element={<Profile />} />
     <Route path="/agency/dashboard" element={<AgencyDashboard />} />
     <Route path="/agency/services" element={<AgencyServices />} />
+    <Route path="/agency/reservations" element={<AgencyReservations />} />
     <Route path="/agency/services/create" element={<ServiceForm />} />
     <Route path="/agency/services/edit/:id" element={<ServiceForm />} />
     <Route path="/agency/bookings" element={<AgencyBookings />} />

@@ -33,7 +33,7 @@ const ServiceDetail = () => {
   return (
     <Box bgcolor="background.default" minHeight="100vh" px={{ xs: 2, md: 8 }} py={6}>
       <Grid container spacing={4}>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Stack spacing={2}>
             {images.map((img, i) => (
               <Paper key={i} elevation={2} sx={{ borderRadius: 4, overflow: 'hidden' }}>
@@ -42,7 +42,7 @@ const ServiceDetail = () => {
             ))}
           </Stack>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Typography variant="h4" fontWeight={700} mb={2}>{service.title}</Typography>
           <Chip label={service.category} color="primary" sx={{ mb: 2 }} />
           <Typography variant="body1" mb={2}>{service.description}</Typography>
@@ -58,7 +58,15 @@ const ServiceDetail = () => {
             <Rating value={service.rating} precision={0.5} readOnly />
             <Typography variant="body2">{service.rating}/5</Typography>
           </Stack>
-          <Button variant="contained" color="primary" size="large" onClick={() => navigate(`/booking/${service.id}`)}>Réserver</Button>
+          <Button 
+            variant="contained" 
+            color="primary" 
+            size="large" 
+            onClick={() => navigate(`/direct-booking/1`)}
+            sx={{ fontWeight: 700, py: 2, borderRadius: 3, mb: 2 }}
+          >
+            Réserver maintenant (Sans paiement)
+          </Button>
           <Paper elevation={1} sx={{ mt: 4, p: 2, borderRadius: 4 }}>
             <Stack direction="row" spacing={2} alignItems="center">
               <Avatar src={service.agency.logo} alt={service.agency.name} />

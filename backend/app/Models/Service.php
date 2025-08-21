@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,8 +10,24 @@ class Service extends Model
     use HasFactory;
 
     protected $fillable = [
-        'agency_id', 'category_id', 'title', 'description', 'price', 'location', 'images', 'status'
+        'agency_id', 
+        'category_id', 
+        'title', 
+        'description', 
+        'price', 
+        'location', 
+        'status',
+        'dates',
+        'images'
     ];
+
+    // Cast des champs
+    protected $casts = [
+        'price' => 'float',
+        'dates' => 'array',
+        'images' => 'array',
+    ];
+
 
     public function agency()
     {

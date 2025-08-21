@@ -13,6 +13,7 @@ return new class extends Migration {
             $table->text('description');
             $table->decimal('price', 10, 2);
             $table->string('location')->nullable();
+            $table->json('dates')->nullable();
             $table->json('images')->nullable();
             $table->string('status')->default('inactive');
             $table->timestamps();

@@ -22,9 +22,10 @@ const Navbar = () => {
   const agency = (() => {
     try {
       const agencyItem = localStorage.getItem('agency');
-      return agencyItem ? JSON.parse(agencyItem) : null;
+      return agencyItem && agencyItem !== 'undefined' ? JSON.parse(agencyItem) : null;
     } catch (error) {
       console.error('Error parsing agency from localStorage:', error);
+      localStorage.removeItem('agency'); // Nettoyer la valeur invalide
       return null;
     }
   })();
@@ -51,8 +52,8 @@ const Navbar = () => {
           {isAuthenticated && role === 'client' && (
             <>
               <Button color="inherit" component={Link} to="/client/dashboard">Mon espace</Button>
+              <Button color="inherit" component={Link} to="/client/reservations">Mes réservations</Button>
               <Button color="inherit" component={Link} to="/client/favorites">Favoris</Button>
-              <Button color="inherit" component={Link} to="/client/bookings">Mes réservations</Button>
             </>
           )}
           
@@ -60,7 +61,8 @@ const Navbar = () => {
           {isAuthenticated && role === 'agency' && (
             <>
               <Button color="inherit" component={Link} to="/agency/dashboard">Espace Agence</Button>
-              <Button color="inherit" component={Link} to="/agency/notifications">Notifications</Button>
+              <Button color="inherit" component={Link} to="/agency/reservations">Réservations</Button>
+              <Button color="inherit" component={Link} to="/agency/services">Services</Button>
               <Button color="inherit" component={Link} to="/agency/statistics">Statistiques</Button>
             </>
           )}

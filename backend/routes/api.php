@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use App\Http\Controllers\ReservationController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,11 @@ Route::post('/bookings', [App\Http\Controllers\BookingController::class, 'store'
 Route::get('/bookings', [App\Http\Controllers\BookingController::class, 'index']);
 Route::get('/bookings/{id}', [App\Http\Controllers\BookingController::class, 'show']);
 Route::put('/bookings/{id}/status', [App\Http\Controllers\BookingController::class, 'updateStatus']);
+
+// Réservations publiques (sans authentification)
+Route::post('/reservations/public', [ReservationController::class, 'storePublic']);
+Route::get('/reservations/public/{id}', [ReservationController::class, 'showPublic']);
+
 Route::get('/reservations', [ReservationController::class, 'index']);
 Route::post('/reservations', [ReservationController::class, 'store']);
 Route::get('/reservations/{id}', [ReservationController::class, 'show']);
@@ -55,3 +61,12 @@ Route::delete('/client/profile/{id}', [App\Http\Controllers\UserController::clas
 Route::get('/analytics/agencies-revenue', [App\Http\Controllers\AnalyticsController::class, 'agenciesRevenue']);
 Route::get('/analytics/clients-evolution', [App\Http\Controllers\AnalyticsController::class, 'clientsEvolution']);
 Route::get('/analytics/dashboard-stats', [App\Http\Controllers\AnalyticsController::class, 'dashboardStats']);
+Route::get('/categories', [CategoryController::class, 'index']);
+
+// Reservations - Routes protégées
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('reservations', ReservationController::class);
+    Route::post('/reservations/{id}/confirm', [ReservationController::class, 'confirm']);
+    Route::post('/reservations/{id}/cancel', [ReservationController::class, 'cancel']);
+    Route::get('/reservations-stats', [ReservationController::class, 'stats']);
+});
