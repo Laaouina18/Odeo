@@ -1,108 +1,131 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { logout } from '../features/authSlice';
+import { getUserFromStorage, isAuthenticated, clearUserStorage } from '../utils/storage';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   
-  // Read user and role from localStorage with better error handling
-  const user = (() => {
-    try {
-      const userItem = localStorage.getItem('user');
-      return userItem ? JSON.parse(userItem) : null;
-    } catch (error) {
-      console.error('Error parsing user from localStorage:', error);
-      return null;
-    }
-  })();
-
-  const agency = (() => {
-    try {
-      const agencyItem = localStorage.getItem('agency');
-      return agencyItem && agencyItem !== 'undefined' ? JSON.parse(agencyItem) : null;
-    } catch (error) {
-      console.error('Error parsing agency from localStorage:', error);
-      localStorage.removeItem('agency'); // Nettoyer la valeur invalide
-      return null;
-    }
-  })();
-
-  const role = localStorage.getItem('role');
-  const isAuthenticated = !!user && !!localStorage.getItem('token');
+  const user = getUserFromStorage();
+  const authenticated = isAuthenticated();
 
   const handleLogout = () => {
+    clearUserStorage();
     dispatch(logout());
     navigate('/');
   };
 
   return (
-    <AppBar position="static" color="primary">
+    <AppBar 
+      position="static" 
+      sx={{ 
+        background: 'linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)',
+        boxShadow: '0 4px 12px rgba(25, 118, 210, 0.15)'
+      }}
+    >
       <Toolbar>
-        <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          Odeo Services
+        <Typography 
+          variant="h5" 
+          sx={{ 
+            flexGrow: 1, 
+            fontWeight: 800,
+            letterSpacing: 1
+          }}
+        >
+          🏛️ ODEO
         </Typography>
-        <Box>
-          <Button color="inherit" component={Link} to="/">Accueil</Button>
-          <Button color="inherit" component={Link} to="/services">Services</Button>
+        
+        <Box display="flex" alignItems="center" gap={2}>
+          <Button 
+            color="inherit" 
+            component={Link} 
+            to="/"
+            sx={{ 
+              textTransform: 'none',
+              fontSize: '1rem',
+              fontWeight: 600
+            }}
+          >
+            🏠 Accueil
+          </Button>
           
-          {/* Client-specific links */}
-          {isAuthenticated && role === 'client' && (
-            <>
-              <Button color="inherit" component={Link} to="/client/dashboard">Mon espace</Button>
-              <Button color="inherit" component={Link} to="/client/reservations">Mes réservations</Button>
-              <Button color="inherit" component={Link} to="/client/favorites">Favoris</Button>
-            </>
+          {authenticated && (
+            <Button 
+              color="inherit" 
+              component={Link} 
+              to="/client-space"
+              sx={{ 
+                textTransform: 'none',
+                fontSize: '1rem',
+                fontWeight: 600
+              }}
+            >
+              👤 Mon Espace
+            </Button>
           )}
           
-          {/* Agency-specific links */}
-          {isAuthenticated && role === 'agency' && (
+          {!authenticated ? (
             <>
-              <Button color="inherit" component={Link} to="/agency/dashboard">Espace Agence</Button>
-              <Button color="inherit" component={Link} to="/agency/reservations">Réservations</Button>
-              <Button color="inherit" component={Link} to="/agency/services">Services</Button>
-              <Button color="inherit" component={Link} to="/agency/statistics">Statistiques</Button>
+              <Button 
+                color="inherit" 
+                component={Link} 
+                to="/login"
+                sx={{ 
+                  textTransform: 'none',
+                  fontSize: '1rem',
+                  fontWeight: 600
+                }}
+              >
+                🔑 Connexion
+              </Button>
+              <Button 
+                color="inherit" 
+                component={Link} 
+                to="/register"
+                variant="outlined"
+                sx={{ 
+                  textTransform: 'none',
+                  fontSize: '1rem',
+                  fontWeight: 600,
+                  borderColor: 'white',
+                  '&:hover': {
+                    borderColor: 'white',
+                    backgroundColor: 'rgba(255,255,255,0.1)'
+                  }
+                }}
+              >
+                📝 Inscription
+              </Button>
             </>
-          )}
-          
-          {/* Admin-specific links */}
-          {isAuthenticated && role === 'admin' && (
+          ) : (
             <>
-              <Button color="inherit" component={Link} to="/admin/dashboard">Admin</Button>
-              <Button color="inherit" component={Link} to="/admin/notifications">Notifications</Button>
-              <Button color="inherit" component={Link} to="/admin/statistics">Statistiques</Button>
+              <Typography 
+                variant="body1" 
+                sx={{ 
+                  color: 'white',
+                  fontWeight: 600,
+                  opacity: 0.9
+                }}
+              >
+                Bonjour {user?.name}
+              </Typography>
+              <Button 
+                color="inherit" 
+                onClick={handleLogout}
+                sx={{ 
+                  textTransform: 'none',
+                  fontSize: '1rem',
+                  fontWeight: 600
+                }}
+              >
+                🚪 Déconnexion
+              </Button>
             </>
-          )}
-          
-          {/* Show login/register if not authenticated */}
-          {!isAuthenticated && (
-            <>
-              <Button color="inherit" component={Link} to="/login">Connexion</Button>
-              <Button color="inherit" component={Link} to="/register">Inscription</Button>
-            </>
-          )}
-          
-          {/* Show logout if authenticated */}
-          {isAuthenticated && (
-            <Button color="inherit" onClick={handleLogout}>Déconnexion</Button>
           )}
         </Box>
-        
-        {/* Show user profile info if authenticated */}
-        {isAuthenticated && user && (
-          <Button color="inherit" component={Link} to={`/${role}/profile`} sx={{ ml: 2 }}>
-            <Typography variant="body2">
-              {role === 'agency' && agency?.name 
-                ? `${agency.name} (${role})`
-                : user?.name 
-                  ? `${user.name} (${role})`
-                  : `Utilisateur (${role})`
-              }
-            </Typography>
-          </Button>
-        )}
       </Toolbar>
     </AppBar>
   );

@@ -40,6 +40,33 @@ Route::put('/bookings/{id}/status', [App\Http\Controllers\BookingController::cla
 Route::post('/reservations/public', [ReservationController::class, 'storePublic']);
 Route::get('/reservations/public/{id}', [ReservationController::class, 'showPublic']);
 
+// Routes pour les utilisateurs spécifiques
+Route::get('/user-reservations/{userId}', [ReservationController::class, 'getUserReservations']);
+Route::post('/reservations/cancel/{id}', [ReservationController::class, 'cancelReservation']);
+Route::put('/reservations/update/{id}', [ReservationController::class, 'updateReservation']);
+
+// Routes pour les agences
+Route::get('/agency-reservations/{agencyId}', [ReservationController::class, 'getAgencyReservations']);
+Route::post('/agency-reservations/{id}/confirm', [ReservationController::class, 'confirmReservation']);
+Route::post('/agency-reservations/{id}/cancel', [ReservationController::class, 'cancelReservationWithReason']);
+Route::get('/agency-stats/{agencyId}', [ReservationController::class, 'getAgencyStats']);
+
+// Routes pour les services d'agence
+Route::get('/agency-services/{agencyId}', [App\Http\Controllers\ServiceController::class, 'getAgencyServices']);
+Route::post('/agency-services', [App\Http\Controllers\ServiceController::class, 'storeForAgency']);
+Route::put('/agency-services/{id}', [App\Http\Controllers\ServiceController::class, 'updateForAgency']);
+Route::delete('/agency-services/{id}', [App\Http\Controllers\ServiceController::class, 'deleteForAgency']);
+
+// Routes pour l'admin
+Route::get('/admin-stats', [ReservationController::class, 'getAdminStats']);
+Route::get('/admin-reservations', [ReservationController::class, 'getAllReservations']);
+Route::get('/reservations/public/{id}', [ReservationController::class, 'showPublic']);
+
+// Routes pour récupérer les réservations d'un utilisateur spécifique
+Route::get('/user-reservations/{userId}', [ReservationController::class, 'getUserReservations']);
+Route::post('/reservations/cancel/{id}', [ReservationController::class, 'cancelReservation']);
+Route::put('/reservations/update/{id}', [ReservationController::class, 'updateReservation']);
+
 Route::get('/reservations', [ReservationController::class, 'index']);
 Route::post('/reservations', [ReservationController::class, 'store']);
 Route::get('/reservations/{id}', [ReservationController::class, 'show']);

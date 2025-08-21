@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { apiFetch } from '../api/axios';
+import { setUserStorage, clearUserStorage } from '../utils/storage';
 
 const initialState = {
   user: null,
@@ -55,19 +56,27 @@ const authSlice = createSlice({
       state.token = null;
       state.isAuthenticated = false;
       state.role = null;
-      localStorage.clear();
-    
+      
+      // Utiliser l'utilitaire pour nettoyer le storage
+      clearUserStorage();
     },
     setUser(state, action) {
-  state.user = action.payload.user;
-  state.token = action.payload.token;
-  state.isAuthenticated = true;
-  state.role = action.payload.role;
-  
-  localStorage.setItem('user', JSON.stringify(action.payload.user));
-  localStorage.setItem('agency', JSON.stringify(action.payload.agency));
-  localStorage.setItem('agency_id', action.payload.agency.id);
-  localStorage.setItem('token', action.payload.token);
+      state.user = action.payload.user;
+      state.token = action.payload.token;
+      state.isAuthenticated = true;
+      state.role = action.payload.role;
+      
+      // Stocker selon le rôle
+      localStorage.setItem('user', JSON.stringify(action.payload.user));
+      localStorage.setItem('token', action.payload.token);
+      localStorage.setItem('role', action.payload.role);
+      
+      if (action.payload.role === 'agency' && action.payload.agency) {
+        localStorage.setItem('agency', JSON.stringify(action.payload.agency));
+        localStorage.setItem('agency_id', action.payload.agency.id);
+      } else if (action.payload.role === 'client') {
+        localStorage.setItem('client_id', action.payload.user.id);
+      }
   localStorage.setItem('role', action.payload.role);
     },
   },
@@ -80,12 +89,9 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.loading = false;
         state.error = null;
-        localStorage.setItem('user', JSON.stringify(action.payload.user));
-        localStorage.setItem('token', action.payload.token);
-        localStorage.setItem('role', action.payload.role);
-        localStorage.setItem('agency_id', action.payload.agency?.id || null);
-          localStorage.setItem('agency', JSON.stringify(action.payload.agency));
-  // agency_id should only be set after fetching/creating agency profile, not from user.id
+        
+        // Utiliser l'utilitaire pour stocker les données
+        setUserStorage(action.payload);
       })
       .addCase(login.pending, (state) => {
         state.loading = true;
@@ -102,12 +108,9 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.loading = false;
         state.error = null;
-        localStorage.setItem('user', JSON.stringify(action.payload.user));
-        localStorage.setItem('token', action.payload.token);
-        localStorage.setItem('role', action.payload.role);
-        localStorage.setItem('agency_id', action.payload.agency?.id || null);
-          localStorage.setItem('agency', JSON.stringify(action.payload.agency))
-  // agency_id should only be set after fetching/creating agency profile, not from user.id
+        
+        // Utiliser l'utilitaire pour stocker les données
+        setUserStorage(action.payload);
       })
       .addCase(register.pending, (state) => {
         state.loading = true;

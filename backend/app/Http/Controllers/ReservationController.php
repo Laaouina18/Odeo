@@ -235,6 +235,7 @@ class ReservationController extends Controller
     public function storePublic(Request $request)
     {
         $data = $request->validate([
+            'user_id' => 'nullable|exists:users,id',
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'phone' => 'nullable|string|max:20',
@@ -253,7 +254,7 @@ class ReservationController extends Controller
         $commissionAmount = $totalPrice * ($commissionRate / 100);
 
         $reservation = Reservation::create([
-            'user_id' => null, // Réservation sans compte utilisateur
+            'user_id' => $data['user_id'] ?? null, // ID utilisateur si connecté
             'service_id' => $data['service_id'],
             'agency_id' => $service->agency_id,
             'guest_name' => $data['name'],
@@ -271,15 +272,191 @@ class ReservationController extends Controller
 
         return response()->json([
             'message' => 'Réservation créée avec succès',
-            'reservation' => $reservation->load(['service.agency', 'service.category'])
+            'reservation' => $reservation->load(['user', 'service.agency', 'service.category'])
         ], 201);
     }
 
     public function showPublic($id)
     {
-        $reservation = Reservation::with(['service.agency', 'service.category'])
+        $reservation = Reservation::with(['user', 'service.agency', 'service.category'])
                                   ->findOrFail($id);
         
         return response()->json(['reservation' => $reservation]);
+    }
+
+    // Récupérer les réservations d'un utilisateur spécifique
+    public function getUserReservations($userId)
+    {
+        $reservations = Reservation::with(['service.agency', 'service.category'])
+                                   ->where(function($query) use ($userId) {
+                                       $query->where('user_id', $userId)
+                                             ->orWhere('guest_email', function($subQuery) use ($userId) {
+                                                 $subQuery->select('email')
+                                                          ->from('users')
+                                                          ->where('id', $userId)
+                                                          ->limit(1);
+                                             });
+                                   })
+                                   ->orderBy('created_at', 'desc')
+                                   ->get();
+
+        return response()->json(['reservations' => $reservations]);
+    }
+
+    // Annuler une réservation (accessible sans auth)
+    public function cancelReservation($id)
+    {
+        $reservation = Reservation::findOrFail($id);
+        
+        // Vérifier si la réservation peut être annulée (3 jours avant)
+        $reservationDate = \Carbon\Carbon::parse($reservation->reservation_date);
+        $now = \Carbon\Carbon::now();
+        $daysDifference = $now->diffInDays($reservationDate, false);
+        
+        if ($daysDifference < 3) {
+            return response()->json([
+                'message' => 'Impossible d\'annuler. Il faut au moins 3 jours avant la date de réservation.'
+            ], 400);
+        }
+        
+        if ($reservation->status === 'cancelled') {
+            return response()->json(['message' => 'Réservation déjà annulée'], 400);
+        }
+        
+        $reservation->update(['status' => 'cancelled']);
+        
+        return response()->json([
+            'message' => 'Réservation annulée avec succès',
+            'reservation' => $reservation->load(['service.agency'])
+        ]);
+    }
+
+    // Modifier une réservation (accessible sans auth)
+    public function updateReservation(Request $request, $id)
+    {
+        $reservation = Reservation::findOrFail($id);
+        
+        // Vérifier si la réservation peut être modifiée (3 jours avant)
+        $reservationDate = \Carbon\Carbon::parse($reservation->reservation_date);
+        $now = \Carbon\Carbon::now();
+        $daysDifference = $now->diffInDays($reservationDate, false);
+        
+        if ($daysDifference < 3) {
+            return response()->json([
+                'message' => 'Impossible de modifier. Il faut au moins 3 jours avant la date de réservation.'
+            ], 400);
+        }
+        
+        if ($reservation->status === 'cancelled') {
+            return response()->json(['message' => 'Impossible de modifier une réservation annulée'], 400);
+        }
+        
+        $data = $request->validate([
+            'reservation_date' => 'sometimes|date|after_or_equal:today',
+            'start_time' => 'sometimes|date_format:H:i',
+            'number_of_people' => 'sometimes|integer|min:1|max:20',
+            'special_requests' => 'sometimes|nullable|string|max:1000',
+            'guest_name' => 'sometimes|string|max:255',
+            'guest_phone' => 'sometimes|nullable|string|max:20'
+        ]);
+
+        // Recalculer le prix si le nombre de personnes change
+        if (isset($data['number_of_people'])) {
+            $service = $reservation->service;
+            $totalPrice = $service->price * $data['number_of_people'];
+            $data['total_price'] = $totalPrice;
+            $data['commission_amount'] = $totalPrice * ($reservation->commission_rate / 100);
+        }
+
+        // Mettre à jour l'heure de début si nécessaire
+        if (isset($data['start_time']) && isset($data['reservation_date'])) {
+            $data['start_time'] = $data['reservation_date'] . ' ' . $data['start_time'];
+        } elseif (isset($data['start_time'])) {
+            $data['start_time'] = $reservation->reservation_date . ' ' . $data['start_time'];
+        }
+
+        $reservation->update($data);
+
+        return response()->json([
+            'message' => 'Réservation modifiée avec succès',
+            'reservation' => $reservation->load(['service.agency'])
+        ]);
+    }
+
+    // Nouvelles méthodes pour les différents rôles
+    public function getAgencyReservations($agencyId)
+    {
+        $reservations = Reservation::with(['user', 'service'])
+                                   ->where('agency_id', $agencyId)
+                                   ->orderBy('created_at', 'desc')
+                                   ->get();
+        
+        return response()->json(['reservations' => $reservations]);
+    }
+
+    public function confirmReservation($id)
+    {
+        $reservation = Reservation::findOrFail($id);
+        $reservation->update(['status' => 'confirmed']);
+        
+        return response()->json([
+            'message' => 'Réservation confirmée avec succès',
+            'reservation' => $reservation->load(['user', 'service'])
+        ]);
+    }
+
+    public function cancelReservationWithReason(Request $request, $id)
+    {
+        $data = $request->validate([
+            'cancellation_reason' => 'required|string|max:500'
+        ]);
+
+        $reservation = Reservation::findOrFail($id);
+        $reservation->update([
+            'status' => 'cancelled',
+            'cancellation_reason' => $data['cancellation_reason']
+        ]);
+        
+        return response()->json([
+            'message' => 'Réservation annulée avec succès',
+            'reservation' => $reservation
+        ]);
+    }
+
+    public function getAgencyStats($agencyId)
+    {
+        $stats = [
+            'total_reservations' => Reservation::where('agency_id', $agencyId)->count(),
+            'confirmed_reservations' => Reservation::where('agency_id', $agencyId)->where('status', 'confirmed')->count(),
+            'pending_reservations' => Reservation::where('agency_id', $agencyId)->where('status', 'pending')->count(),
+            'cancelled_reservations' => Reservation::where('agency_id', $agencyId)->where('status', 'cancelled')->count(),
+            'total_revenue' => Reservation::where('agency_id', $agencyId)->where('status', 'confirmed')->sum('total_price'),
+            'total_commission' => Reservation::where('agency_id', $agencyId)->where('status', 'confirmed')->sum('commission_amount'),
+        ];
+        
+        return response()->json(['stats' => $stats]);
+    }
+
+    public function getAdminStats()
+    {
+        $stats = [
+            'total_reservations' => Reservation::count(),
+            'total_revenue' => Reservation::where('status', 'confirmed')->sum('total_price'),
+            'total_commission' => Reservation::where('status', 'confirmed')->sum('commission_amount'),
+            'agencies_count' => \App\Models\User::where('role', 'agency')->count(),
+            'clients_count' => \App\Models\User::where('role', 'client')->count(),
+            'services_count' => \App\Models\Service::count(),
+        ];
+        
+        return response()->json(['stats' => $stats]);
+    }
+
+    public function getAllReservations()
+    {
+        $reservations = Reservation::with(['user', 'service.agency'])
+                                   ->orderBy('created_at', 'desc')
+                                   ->get();
+        
+        return response()->json(['reservations' => $reservations]);
     }
 }

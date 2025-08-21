@@ -243,4 +243,125 @@ class ServiceController extends Controller
             ], 500);
         }
     }
+
+    // Méthodes spécifiques pour les agences
+    public function getAgencyServices($agencyId)
+    {
+        try {
+            $services = Service::with(['category'])
+                              ->where('agency_id', $agencyId)
+                              ->orderBy('created_at', 'desc')
+                              ->get();
+            
+            return response()->json([
+                'success' => true,
+                'services' => $services
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de la récupération des services de l\'agence: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération des services'
+            ], 500);
+        }
+    }
+
+    public function toggleStatus($id)
+    {
+        try {
+            $service = Service::findOrFail($id);
+            $service->status = $service->status === 'active' ? 'inactive' : 'active';
+            $service->save();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Statut du service modifié avec succès',
+                'service' => $service
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de la modification du statut: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la modification du statut'
+            ], 500);
+        }
+    }
+
+    public function getServiceStats($id)
+    {
+        try {
+            $service = Service::with('reservations')->findOrFail($id);
+            
+            $stats = [
+                'total_reservations' => $service->reservations()->count(),
+                'confirmed_reservations' => $service->reservations()->where('status', 'confirmed')->count(),
+                'pending_reservations' => $service->reservations()->where('status', 'pending')->count(),
+                'cancelled_reservations' => $service->reservations()->where('status', 'cancelled')->count(),
+                'total_revenue' => $service->reservations()->where('status', 'confirmed')->sum('total_price'),
+                'average_rating' => 4.2, // À implémenter avec un système de notation
+            ];
+            
+            return response()->json([
+                'success' => true,
+                'stats' => $stats
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de la récupération des statistiques: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération des statistiques'
+            ], 500);
+        }
+    }
+
+    public function getServiceWithDates($id)
+    {
+        try {
+            $service = Service::with(['category', 'agency'])->findOrFail($id);
+            
+            // Générer les créneaux disponibles pour les 30 prochains jours
+            $availableDates = [];
+            $startDate = now();
+            
+            for ($i = 0; $i < 30; $i++) {
+                $date = $startDate->copy()->addDays($i);
+                
+                // Créneaux horaires par défaut (9h-17h)
+                $timeSlots = [];
+                for ($hour = 9; $hour <= 17; $hour++) {
+                    $timeSlot = $date->copy()->setTime($hour, 0);
+                    
+                    // Vérifier si le créneau est déjà réservé
+                    $isBooked = $service->reservations()
+                                      ->where('reservation_date', $date->toDateString())
+                                      ->where('start_time', $timeSlot->format('H:i'))
+                                      ->whereIn('status', ['pending', 'confirmed'])
+                                      ->exists();
+                    
+                    if (!$isBooked) {
+                        $timeSlots[] = $timeSlot->format('H:i');
+                    }
+                }
+                
+                if (!empty($timeSlots)) {
+                    $availableDates[] = [
+                        'date' => $date->toDateString(),
+                        'timeSlots' => $timeSlots
+                    ];
+                }
+            }
+            
+            return response()->json([
+                'success' => true,
+                'service' => $service,
+                'availableDates' => $availableDates
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de la récupération du service avec dates: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération du service'
+            ], 500);
+        }
+    }
 }

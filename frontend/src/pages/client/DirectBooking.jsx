@@ -30,6 +30,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import { createPublicReservation, getPublicReservation } from '../../api/publicReservations';
 import { getServiceWithDates } from '../../api/services';
+import { getUserFromStorage, isAuthenticated, getClientId } from '../../utils/storage';
 
 const DirectBooking = () => {
   const { serviceId } = useParams();
@@ -37,6 +38,7 @@ const DirectBooking = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [service, setService] = useState(null);
   const [loadingService, setLoadingService] = useState(true);
+  const [currentUser, setCurrentUser] = useState(null);
   const [bookingData, setBookingData] = useState({
     name: '',
     email: '',
@@ -52,6 +54,19 @@ const DirectBooking = () => {
   const [error, setError] = useState('');
 
   const steps = ['Informations', 'Confirmation', 'Facture PDF'];
+
+  // Récupérer l'utilisateur connecté et pré-remplir le formulaire
+  useEffect(() => {
+    const user = getUserFromStorage();
+    if (user && isAuthenticated()) {
+      setCurrentUser(user);
+      setBookingData(prev => ({
+        ...prev,
+        name: user.name || '',
+        email: user.email || ''
+      }));
+    }
+  }, []);
 
   // Charger les données du service
   useEffect(() => {
@@ -98,8 +113,8 @@ const DirectBooking = () => {
     setError('');
     
     try {
-      // Créer la réservation via l'API
-      const response = await createPublicReservation({
+      // Préparer les données de réservation
+      const reservationData = {
         name: bookingData.name,
         email: bookingData.email,
         phone: bookingData.phone,
@@ -108,7 +123,15 @@ const DirectBooking = () => {
         time: bookingData.time,
         people: bookingData.people,
         specialRequests: bookingData.specialRequests
-      });
+      };
+
+      // Ajouter l'ID utilisateur si connecté
+      if (currentUser && isAuthenticated()) {
+        reservationData.userId = currentUser.id;
+      }
+
+      // Créer la réservation via l'API
+      const response = await createPublicReservation(reservationData);
       
       if (response.reservation) {
         setReservation(response.reservation);
@@ -329,9 +352,28 @@ const DirectBooking = () => {
                   🏜️ {service?.title || 'Réservation Service'}
                 </Typography>
                 
+                {currentUser && (
+                  <Alert severity="info" sx={{ mb: 3 }}>
+                    ✅ Vous êtes connecté en tant que <strong>{currentUser.name}</strong>. Vos informations seront liées à votre compte.
+                  </Alert>
+                )}
+                
                 {error && (
                   <Alert severity="error" sx={{ mb: 3 }}>
                     {error}
+                  </Alert>
+                )}
+                
+                {!currentUser && (
+                  <Alert severity="warning" sx={{ mb: 3 }}>
+                    💡 Vous pouvez réserver sans compte, mais si vous souhaitez suivre vos réservations, 
+                    <Button 
+                      variant="text" 
+                      onClick={() => navigate('/login')}
+                      sx={{ ml: 1, textTransform: 'none', fontWeight: 600 }}
+                    >
+                      connectez-vous ici
+                    </Button>
                   </Alert>
                 )}
                 

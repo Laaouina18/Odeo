@@ -3,22 +3,29 @@
 // Créer une réservation publique (sans authentification)
 export const createPublicReservation = async (reservationData) => {
   try {
+    const requestBody = {
+      name: reservationData.name,
+      email: reservationData.email,
+      phone: reservationData.phone,
+      service_id: parseInt(reservationData.serviceId),
+      reservation_date: reservationData.date,
+      start_time: reservationData.time,
+      number_of_people: parseInt(reservationData.people),
+      special_requests: reservationData.specialRequests
+    };
+
+    // Ajouter l'ID utilisateur si fourni
+    if (reservationData.userId) {
+      requestBody.user_id = parseInt(reservationData.userId);
+    }
+
     const response = await fetch('http://localhost:8000/api/reservations/public', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      body: JSON.stringify({
-        name: reservationData.name,
-        email: reservationData.email,
-        phone: reservationData.phone,
-        service_id: parseInt(reservationData.serviceId),
-        reservation_date: reservationData.date,
-        start_time: reservationData.time,
-        number_of_people: parseInt(reservationData.people),
-        special_requests: reservationData.specialRequests
-      })
+      body: JSON.stringify(requestBody)
     });
     
     if (!response.ok) {
