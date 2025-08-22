@@ -45,9 +45,14 @@ class User extends Authenticatable
     ];
 
     // Relations
-    public function agency()
+    public function services()
     {
-        return $this->hasOne(Agency::class);
+        return $this->hasMany(Service::class, 'agency_id');
+    }
+
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class, 'user_id');
     }
 
     public function bookings()
@@ -55,19 +60,14 @@ class User extends Authenticatable
         return $this->hasMany(Booking::class, 'client_id');
     }
 
-    public function services()
-    {
-        return $this->hasManyThrough(Service::class, Agency::class);
-    }
-
     // Scopes
     public function scopeClients($query)
     {
-        return $query->whereDoesntHave('agency');
+        return $query->where('role', 'client');
     }
 
     public function scopeAgencies($query)
     {
-        return $query->whereHas('agency');
+        return $query->where('role', 'agency');
     }
 }

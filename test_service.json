@@ -1,0 +1,11 @@
+{
+  "title": "Service Test",
+  "description": "Description du service test",
+  "price": 100,
+  "location": "Casablanca",
+  "duration": 60,
+  "max_participants": 10,
+  "agency_id": 1,
+  "category_id": 1,
+  "status": "active"
+}

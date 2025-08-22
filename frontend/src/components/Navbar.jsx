@@ -22,8 +22,9 @@ const Navbar = () => {
     <AppBar 
       position="static" 
       sx={{ 
-        background: 'linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)',
-        boxShadow: '0 4px 12px rgba(25, 118, 210, 0.15)'
+        background: 'linear-gradient(135deg, rgb(129, 39, 85) 0%, rgba(129, 39, 85, 0.8) 100%)',
+        boxShadow: '0 4px 20px rgba(129, 39, 85, 0.3)',
+        backdropFilter: 'blur(10px)',
       }}
     >
       <Toolbar>
@@ -32,7 +33,12 @@ const Navbar = () => {
           sx={{ 
             flexGrow: 1, 
             fontWeight: 800,
-            letterSpacing: 1
+            letterSpacing: 1,
+            background: 'linear-gradient(45deg, #ffffff, #f8f9fa)',
+            backgroundClip: 'text',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            textShadow: '0 2px 4px rgba(0,0,0,0.1)'
           }}
         >
           🏛️ ODEO
@@ -53,18 +59,65 @@ const Navbar = () => {
           </Button>
           
           {authenticated && (
-            <Button 
-              color="inherit" 
-              component={Link} 
-              to="/client-space"
-              sx={{ 
-                textTransform: 'none',
-                fontSize: '1rem',
-                fontWeight: 600
-              }}
-            >
-              👤 Mon Espace
-            </Button>
+            <>
+              {user?.role === 'client' && (
+                <Button 
+                  color="inherit" 
+                  component={Link} 
+                  to="/client/dashboard"
+                  sx={{ 
+                    textTransform: 'none',
+                    fontSize: '1rem',
+                    fontWeight: 600
+                  }}
+                >
+                  📊 Mon Dashboard
+                </Button>
+              )}
+              
+              {user?.role === 'agency' && (
+                <Button 
+                  color="inherit" 
+                  component={Link} 
+                  to="/agency/dashboard"
+                  sx={{ 
+                    textTransform: 'none',
+                    fontSize: '1rem',
+                    fontWeight: 600
+                  }}
+                >
+                  🏢 Dashboard Agence
+                </Button>
+              )}
+              
+              {user?.role === 'admin' && (
+                <Button 
+                  color="inherit" 
+                  component={Link} 
+                  to="/admin/dashboard"
+                  sx={{ 
+                    textTransform: 'none',
+                    fontSize: '1rem',
+                    fontWeight: 600
+                  }}
+                >
+                  ⚙️ Dashboard Admin
+                </Button>
+              )}
+              
+              <Button 
+                color="inherit" 
+                component={Link} 
+                to="/client-space"
+                sx={{ 
+                  textTransform: 'none',
+                  fontSize: '1rem',
+                  fontWeight: 600
+                }}
+              >
+                👤 Mon Espace
+              </Button>
+            </>
           )}
           
           {!authenticated ? (

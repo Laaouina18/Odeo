@@ -18,7 +18,9 @@ class Service extends Model
         'location', 
         'status',
         'dates',
-        'images'
+        'images',
+        'duration',
+        'max_participants'
     ];
 
     // Cast des champs

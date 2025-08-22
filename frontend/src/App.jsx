@@ -3,7 +3,7 @@ import AppRoutes from './app/routes';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import { ThemeProvider, CssBaseline } from '@mui/material';
-import theme from './theme';
+import theme from './theme/theme';
 
 function App() {
   return (

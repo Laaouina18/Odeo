@@ -44,56 +44,59 @@ class ServiceController extends Controller
     public function store(Request $request)
     {
         try {
+            // Log des données reçues pour debug
+            Log::info('Données reçues pour création de service:', $request->all());
+            
             // Validation des champs
             $validated = $request->validate([
-                'agency_id'   => 'required|exists:agencies,id',
-                'category_id' => 'required|exists:categories,id',
-                'title'       => 'required|string|max:255',
-                'description' => 'required|string',
-                'price'       => 'required|numeric|min:0',
-                'location'    => 'nullable|string',
-                'status'      => 'nullable|string',
-                'dates'       => 'nullable|array',
-                'dates.*'     => 'string|date_format:Y-m-d',
-                'images.*'    => 'nullable|file|image|mimes:jpeg,png,jpg,gif|max:5120',
+                'agency_id'       => 'required|integer',
+                'category_id'     => 'nullable|integer',
+                'title'           => 'required|string|max:255',
+                'description'     => 'required|string',
+                'price'           => 'required|numeric|min:0',
+                'location'        => 'nullable|string',
+                'status'          => 'nullable|string',
+                'duration'        => 'nullable|integer|min:1',
+                'max_participants'=> 'nullable|integer|min:1',
+                'dates'           => 'nullable|array',
+                'dates.*'         => 'nullable|string',
             ]);
 
-            // Gestion des dates
-            $dates = [];
-            if ($request->has('dates')) {
-                $datesRaw = $request->input('dates');
-                if (is_array($datesRaw)) {
-                    $dates = $datesRaw;
-                } else {
-                    $decoded = json_decode($datesRaw, true);
-                    if (is_array($decoded)) {
-                        $dates = $decoded;
-                    }
-                }
-            }
-            $validated['dates'] = $dates;
+            Log::info('Données validées:', $validated);
 
-            // Gestion des images multiples
-            $imagesPaths = [];
-            // Récupérer tous les fichiers qui commencent par "images"
-            $allFiles = $request->allFiles();
-            foreach ($allFiles as $key => $files) {
-                if (strpos($key, 'images') === 0) {
-                    if (is_array($files)) {
-                        foreach ($files as $file) {
-                            $path = $file->store('services', 'public');
-                            $imagesPaths[] = $path;
+            // Validation et formatage des dates
+            if (isset($validated['dates']) && is_array($validated['dates'])) {
+                $formattedDates = [];
+                foreach ($validated['dates'] as $date) {
+                    if (!empty($date)) {
+                        // Essayer de parser différents formats de date
+                        try {
+                            $parsedDate = \Carbon\Carbon::createFromFormat('Y-m-d', $date);
+                            $formattedDates[] = $parsedDate->format('Y-m-d');
+                        } catch (\Exception $e) {
+                            try {
+                                $parsedDate = \Carbon\Carbon::parse($date);
+                                $formattedDates[] = $parsedDate->format('Y-m-d');
+                            } catch (\Exception $e2) {
+                                Log::warning("Format de date invalide: $date");
+                                // Ignorer les dates invalides au lieu de faire échouer la création
+                            }
                         }
-                    } else {
-                        $path = $files->store('services', 'public');
-                        $imagesPaths[] = $path;
                     }
                 }
+                $validated['dates'] = $formattedDates;
             }
 
-            $validated['status'] = $validated['status'] ?? 'inactive';
+            // Définir une catégorie par défaut si pas fournie
+            if (!isset($validated['category_id'])) {
+                $validated['category_id'] = 1;
+            }
+
+            // Valeurs par défaut et formatage
+            $validated['status'] = $validated['status'] ?? 'active';
             $validated['price'] = (float) $validated['price'];
-            $validated['images'] = $imagesPaths;
+            $validated['duration'] = $validated['duration'] ?? 60;
+            $validated['max_participants'] = $validated['max_participants'] ?? 10;
 
             $service = Service::create($validated);
 
@@ -111,9 +114,11 @@ class ServiceController extends Controller
             ], 422);
         } catch (\Exception $e) {
             Log::error('Erreur lors de la création du service: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
             return response()->json([
                 'success' => false,
-                'message' => 'Erreur lors de la création du service'
+                'message' => 'Erreur lors de la création du service: ' . $e->getMessage(),
+                'error' => $e->getMessage()
             ], 500);
         }
     }

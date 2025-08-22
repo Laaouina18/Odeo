@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 
@@ -53,13 +54,19 @@ Route::get('/agency-stats/{agencyId}', [ReservationController::class, 'getAgency
 
 // Routes pour les services d'agence
 Route::get('/agency-services/{agencyId}', [App\Http\Controllers\ServiceController::class, 'getAgencyServices']);
-Route::post('/agency-services', [App\Http\Controllers\ServiceController::class, 'storeForAgency']);
-Route::put('/agency-services/{id}', [App\Http\Controllers\ServiceController::class, 'updateForAgency']);
-Route::delete('/agency-services/{id}', [App\Http\Controllers\ServiceController::class, 'deleteForAgency']);
+Route::post('/services/{id}/toggle-status', [App\Http\Controllers\ServiceController::class, 'toggleStatus']);
+Route::get('/services/{id}/stats', [App\Http\Controllers\ServiceController::class, 'getServiceStats']);
+Route::get('/services/{id}/with-dates', [App\Http\Controllers\ServiceController::class, 'getServiceWithDates']);
 
 // Routes pour l'admin
-Route::get('/admin-stats', [ReservationController::class, 'getAdminStats']);
-Route::get('/admin-reservations', [ReservationController::class, 'getAllReservations']);
+Route::get('/admin-stats', [App\Http\Controllers\AdminController::class, 'getStats']);
+Route::get('/admin-reservations', [App\Http\Controllers\AdminController::class, 'getReservations']);
+Route::get('/admin/users', [App\Http\Controllers\AdminController::class, 'getUsers']);
+Route::get('/admin/agencies', [App\Http\Controllers\AdminController::class, 'getAgencies']);
+Route::post('/admin/users', [App\Http\Controllers\AdminController::class, 'createUser']);
+Route::put('/admin/users/{id}', [App\Http\Controllers\AdminController::class, 'updateUser']);
+Route::delete('/admin/users/{id}', [App\Http\Controllers\AdminController::class, 'deleteUser']);
+Route::get('/admin/commission-data', [App\Http\Controllers\AdminController::class, 'getCommissionData']);
 Route::get('/reservations/public/{id}', [ReservationController::class, 'showPublic']);
 
 // Routes pour récupérer les réservations d'un utilisateur spécifique

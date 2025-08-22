@@ -33,7 +33,7 @@ const Home = () => {
     const loadData = async () => {
       try {
         const [servicesRes, categoriesRes] = await Promise.all([
-          getServices({ status: 'active', limit: 8 }),
+          getServices({ status: 'active' }), // Supprimer la limite pour récupérer tous les services
           getCategories()
         ]);
         setServices(servicesRes.data?.data || []);
@@ -147,15 +147,20 @@ const Home = () => {
         </Stack>
       </Container>
 
-      {/* Featured Services Section */}
+      {/* All Services Section */}
       <Container maxWidth="lg" sx={{ py: 6 }}>
-        <Typography variant="h4" fontWeight={600} mb={4} textAlign="center">
-          Services populaires
+        <Typography variant="h4" fontWeight={600} mb={2} textAlign="center">
+          Tous nos services
         </Typography>
+        {!loading && services.length > 0 && (
+          <Typography variant="body2" color="text.secondary" mb={4} textAlign="center">
+            {services.length} service{services.length > 1 ? 's' : ''} disponible{services.length > 1 ? 's' : ''}
+          </Typography>
+        )}
         <Grid container spacing={4}>
           {loading ? (
             // Skeleton loading
-            Array.from({ length: 8 }).map((_, index) => (
+            Array.from({ length: 12 }).map((_, index) => (
               <Grid item xs={12} sm={6} md={3} key={index}>
                 <Card sx={{ borderRadius: 4 }}>
                   <Skeleton variant="rectangular" height={200} />
@@ -221,7 +226,7 @@ const Home = () => {
                     </Box>
                     <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                       <Typography variant="h6" color="primary" fontWeight={700}>
-                        {service.price}€
+                        {service.price} DH
                       </Typography>
                       <Chip 
                         label={service.category?.name || 'Autre'} 
@@ -261,19 +266,6 @@ const Home = () => {
             <Typography variant="body2" color="text.secondary">
               Les agences peuvent ajouter leurs services via leur tableau de bord
             </Typography>
-          </Box>
-        )}
-        
-        {!loading && services.length > 0 && (
-          <Box textAlign="center" mt={6}>
-            <Button 
-              variant="outlined" 
-              size="large" 
-              onClick={() => navigate('/services')}
-              sx={{ borderRadius: 3, px: 4, py: 1.5 }}
-            >
-              Voir tous les services
-            </Button>
           </Box>
         )}
       </Container>
