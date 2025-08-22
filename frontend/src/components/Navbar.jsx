@@ -156,45 +156,7 @@ const Navbar = () => {
           {/* Barre de recherche - Desktop */}
           {!isMobile && (
             <Box sx={{ position: 'relative', flexGrow: 1, maxWidth: 400, mx: 3 }}>
-              <TextField
-                size="small"
-                placeholder="Rechercher des services..."
-                value={searchQuery}
-                onChange={(e) => handleSearch(e.target.value)}
-                onFocus={() => searchResults.length > 0 && setShowSearchResults(true)}
-                onBlur={() => setTimeout(() => setShowSearchResults(false), 200)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon sx={{ color: 'rgba(129, 39, 85, 0.7)' }} />
-                    </InputAdornment>
-                  ),
-                  endAdornment: searchQuery && (
-                    <InputAdornment position="end">
-                      <IconButton size="small" onClick={() => {
-                        setSearchQuery('');
-                        setSearchResults([]);
-                        setShowSearchResults(false);
-                      }}>
-                        <CloseIcon fontSize="small" />
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-                sx={{
-                  width: '100%',
-                  '& .MuiOutlinedInput-root': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                    borderRadius: 3,
-                    '&:hover fieldset': {
-                      borderColor: 'rgba(129, 39, 85, 0.5)',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: 'rgb(129, 39, 85)',
-                    },
-                  },
-                }}
-              />
+          
               
               {/* Résultats de recherche */}
               {showSearchResults && searchResults.length > 0 && (
@@ -262,24 +224,7 @@ const Navbar = () => {
                 Accueil
               </Button>
               
-              <Button 
-                color="inherit" 
-                component={Link} 
-                to="/services"
-                startIcon={<SearchIcon />}
-                sx={{ 
-                  textTransform: 'none',
-                  fontSize: '0.95rem',
-                  fontWeight: 600,
-                  px: 2,
-                  borderRadius: 2,
-                  '&:hover': {
-                    backgroundColor: 'rgba(255,255,255,0.1)'
-                  }
-                }}
-              >
-                Services
-              </Button>
+              
               
               {authenticated ? (
                 <>
@@ -483,68 +428,7 @@ const Navbar = () => {
         }}
       >
         <Toolbar />
-        
-        {/* Recherche Mobile */}
-        <Box sx={{ p: 2 }}>
-          <TextField
-            fullWidth
-            size="small"
-            placeholder="Rechercher des services..."
-            value={searchQuery}
-            onChange={(e) => handleSearch(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{ color: 'rgba(129, 39, 85, 0.7)' }} />
-                </InputAdornment>
-              )
-            }}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                borderRadius: 2,
-                '&:hover fieldset': {
-                  borderColor: 'rgba(129, 39, 85, 0.5)',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: 'rgb(129, 39, 85)',
-                },
-              },
-            }}
-          />
-          
-          {/* Résultats recherche mobile */}
-          {searchResults.length > 0 && (
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="subtitle2" color="rgb(129, 39, 85)" sx={{ mb: 1 }}>
-                Résultats de recherche:
-              </Typography>
-              {searchResults.slice(0, 3).map((service) => (
-                <Box
-                  key={service.id}
-                  sx={{
-                    p: 1.5,
-                    mb: 1,
-                    borderRadius: 1,
-                    backgroundColor: 'rgba(129, 39, 85, 0.05)',
-                    cursor: 'pointer',
-                    '&:hover': {
-                      backgroundColor: 'rgba(129, 39, 85, 0.1)'
-                    }
-                  }}
-                  onClick={() => {
-                    handleSearchResultClick(service.id);
-                    setMobileDrawerOpen(false);
-                  }}
-                >
-                  <Typography variant="subtitle2" fontWeight={600}>
-                    {service.name}
-                  </Typography>
-                </Box>
-              ))}
-            </Box>
-          )}
-        </Box>
-
+     
         <Divider />
         
         {/* Menu Items */}
