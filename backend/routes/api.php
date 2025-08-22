@@ -26,6 +26,7 @@ Route::get('/me', [App\Http\Controllers\AuthController::class, 'me']);
 
 // Services
 Route::get('/services', [App\Http\Controllers\ServiceController::class, 'index']);
+Route::get('/services/search', [App\Http\Controllers\ServiceController::class, 'search']);
 Route::get('/services/{id}', [App\Http\Controllers\ServiceController::class, 'show']);
 Route::post('/services', [App\Http\Controllers\ServiceController::class, 'store']);
 Route::put('/services/{id}', [App\Http\Controllers\ServiceController::class, 'update']);

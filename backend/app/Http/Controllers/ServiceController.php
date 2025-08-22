@@ -369,4 +369,70 @@ class ServiceController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Recherche avancée de services
+     */
+    public function search(Request $request)
+    {
+        try {
+            $query = Service::query()->with(['agency', 'category']);
+            
+            // Recherche par mot-clé dans le titre et la description
+            if ($request->has('q') && !empty($request->q)) {
+                $searchTerm = $request->q;
+                $query->where(function ($q) use ($searchTerm) {
+                    $q->where('title', 'like', '%' . $searchTerm . '%')
+                      ->orWhere('name', 'like', '%' . $searchTerm . '%')
+                      ->orWhere('description', 'like', '%' . $searchTerm . '%');
+                });
+            }
+            
+            // Filtrer par catégorie
+            if ($request->has('category') && !empty($request->category)) {
+                $query->whereHas('category', function ($q) use ($request) {
+                    $q->where('name', 'like', '%' . $request->category . '%');
+                });
+            }
+            
+            // Filtrer par statut (par défaut actif)
+            $query->where('status', $request->get('status', 'active'));
+            
+            // Filtrer par prix
+            if ($request->has('min_price')) {
+                $query->where('price', '>=', $request->min_price);
+            }
+            
+            if ($request->has('max_price')) {
+                $query->where('price', '<=', $request->max_price);
+            }
+            
+            // Filtrer par agence
+            if ($request->has('agency_id')) {
+                $query->where('agency_id', $request->agency_id);
+            }
+            
+            // Trier les résultats
+            $sortBy = $request->get('sort_by', 'created_at');
+            $sortOrder = $request->get('sort_order', 'desc');
+            
+            $query->orderBy($sortBy, $sortOrder);
+            
+            // Limiter le nombre de résultats pour la recherche en temps réel
+            $limit = $request->get('limit', 10);
+            $services = $query->limit($limit)->get();
+            
+            return response()->json([
+                'success' => true,
+                'data' => $services,
+                'total' => $query->count()
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de la recherche de services: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la recherche'
+            ], 500);
+        }
+    }
 }

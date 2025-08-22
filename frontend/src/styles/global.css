@@ -204,6 +204,213 @@ body {
   .mobile-margin {
     margin: 0.5rem !important;
   }
+  
+  .mobile-text-center {
+    text-align: center !important;
+  }
+  
+  .mobile-full-width {
+    width: 100% !important;
+  }
+  
+  .mobile-hidden {
+    display: none !important;
+  }
+  
+  /* Navbar mobile */
+  .mobile-navbar {
+    padding: 0.5rem 1rem !important;
+  }
+  
+  /* Cards mobile */
+  .MuiCard-root {
+    margin: 0.5rem 0 !important;
+  }
+  
+  /* Buttons mobile */
+  .MuiButton-root {
+    padding: 12px 16px !important;
+    font-size: 0.9rem !important;
+  }
+  
+  /* Typography mobile */
+  .mobile-h1 {
+    font-size: 2rem !important;
+  }
+  
+  .mobile-h2 {
+    font-size: 1.8rem !important;
+  }
+  
+  .mobile-h3 {
+    font-size: 1.5rem !important;
+  }
+  
+  /* Grid spacing mobile */
+  .MuiGrid-container {
+    margin: 0 !important;
+    width: 100% !important;
+  }
+  
+  .MuiGrid-item {
+    padding: 8px !important;
+  }
+  
+  /* Dialog mobile */
+  .MuiDialog-paper {
+    margin: 16px !important;
+    width: calc(100% - 32px) !important;
+    max-height: calc(100% - 64px) !important;
+  }
+  
+  /* Search bar mobile */
+  .mobile-search {
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+  
+  /* Hero section mobile */
+  .mobile-hero {
+    padding: 2rem 1rem !important;
+    min-height: 60vh !important;
+  }
+  
+  /* Stats cards mobile */
+  .mobile-stats-card {
+    margin-bottom: 1rem !important;
+  }
+  
+  .mobile-stats-card .MuiCardContent-root {
+    padding: 1.5rem !important;
+  }
+  
+  /* Table mobile */
+  .MuiTableContainer-root {
+    overflow-x: auto !important;
+  }
+  
+  .MuiTable-root {
+    min-width: 650px !important;
+  }
+  
+  /* Chart mobile */
+  .mobile-chart {
+    height: 250px !important;
+  }
+  
+  /* Service cards mobile */
+  .mobile-service-card {
+    margin-bottom: 1rem !important;
+  }
+  
+  .mobile-service-card .MuiCardMedia-root {
+    height: 180px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Extra small screens */
+  .mobile-xs-padding {
+    padding: 0.5rem !important;
+  }
+  
+  .mobile-xs-text {
+    font-size: 0.8rem !important;
+  }
+  
+  .MuiButton-root {
+    padding: 8px 12px !important;
+    font-size: 0.8rem !important;
+  }
+  
+  .mobile-h1 {
+    font-size: 1.8rem !important;
+  }
+  
+  .mobile-h2 {
+    font-size: 1.5rem !important;
+  }
+  
+  .mobile-h3 {
+    font-size: 1.3rem !important;
+  }
+  
+  /* Chips mobile */
+  .MuiChip-root {
+    font-size: 0.7rem !important;
+    height: 24px !important;
+  }
+  
+  /* Avatar mobile */
+  .MuiAvatar-root {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 0.8rem !important;
+  }
+}
+
+/* Tablet styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .tablet-padding {
+    padding: 1.5rem !important;
+  }
+  
+  .tablet-margin {
+    margin: 1rem !important;
+  }
+  
+  /* Grid tablet */
+  .MuiGrid-item {
+    padding: 12px !important;
+  }
+  
+  /* Cards tablet */
+  .tablet-card {
+    margin: 0.75rem 0 !important;
+  }
+  
+  /* Service cards tablet */
+  .tablet-service-card .MuiCardMedia-root {
+    height: 200px !important;
+  }
+  
+  /* Hero section tablet */
+  .tablet-hero {
+    padding: 3rem 2rem !important;
+    min-height: 70vh !important;
+  }
+  
+  /* Chart tablet */
+  .tablet-chart {
+    height: 300px !important;
+  }
+}
+
+/* Large screens */
+@media (min-width: 1200px) {
+  .desktop-large-padding {
+    padding: 3rem !important;
+  }
+  
+  .desktop-large-margin {
+    margin: 2rem !important;
+  }
+  
+  /* Hero section large */
+  .desktop-large-hero {
+    padding: 5rem 3rem !important;
+    min-height: 80vh !important;
+  }
+  
+  /* Chart large */
+  .desktop-large-chart {
+    height: 400px !important;
+  }
+  
+  /* Service cards large */
+  .desktop-large-service-card .MuiCardMedia-root {
+    height: 250px !important;
+  }
 }
 
 /* Dark mode support */

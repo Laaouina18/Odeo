@@ -36,8 +36,8 @@ import {
   Email
 } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ServiceDetailSkeleton } from '../../components/SkeletonLoader';
-import apiFetch from '../../api/apiFetch';
+import { ServiceDetailSkeleton } from '../components/SkeletonLoader';
+import apiFetch from '../api/apiFetch';
 
 const ServiceDetail = () => {
   const { id } = useParams();

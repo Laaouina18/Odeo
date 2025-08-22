@@ -50,6 +50,8 @@ import {
   Cell
 } from 'recharts';
 import { getUserFromStorage } from '../../utils/storage';
+
+import { DashboardSkeleton, StatsCardSkeleton, ChartSkeleton } from '../../components/SkeletonLoader';
 import apiFetch from '../../api/apiFetch';
 
 function TabPanel({ children, value, index, ...other }) {
@@ -263,6 +265,11 @@ const AdminDashboard = () => {
         <Typography>Chargement...</Typography>
       </Box>
     );
+  }
+
+  // Afficher le skeleton pendant le chargement des données
+  if (loading) {
+    return <DashboardSkeleton />;
   }
 
   const pieData = [

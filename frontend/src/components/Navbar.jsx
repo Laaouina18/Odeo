@@ -262,6 +262,25 @@ const Navbar = () => {
                 Accueil
               </Button>
               
+              <Button 
+                color="inherit" 
+                component={Link} 
+                to="/services"
+                startIcon={<SearchIcon />}
+                sx={{ 
+                  textTransform: 'none',
+                  fontSize: '0.95rem',
+                  fontWeight: 600,
+                  px: 2,
+                  borderRadius: 2,
+                  '&:hover': {
+                    backgroundColor: 'rgba(255,255,255,0.1)'
+                  }
+                }}
+              >
+                Services
+              </Button>
+              
               {authenticated ? (
                 <>
                   {user?.role === 'client' && (

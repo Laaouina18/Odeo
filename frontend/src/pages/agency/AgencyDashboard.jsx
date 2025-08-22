@@ -34,10 +34,12 @@ import {
   Cancel
 } from '@mui/icons-material';
 import { getUserFromStorage } from '../../utils/storage';
+import { DashboardSkeleton, StatsCardSkeleton } from '../../components/SkeletonLoader.jsx';
 import apiFetch from '../../api/apiFetch';
 
 const AgencyDashboard = () => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({});
   const [services, setServices] = useState([]);
   const [reservations, setReservations] = useState([]);
@@ -75,6 +77,8 @@ const AgencyDashboard = () => {
 
   const loadDashboardData = async (agencyId) => {
     try {
+      setLoading(true);
+      
       // Charger les catégories
       const categoriesResponse = await apiFetch('/categories');
       setCategories(categoriesResponse.data || categoriesResponse.categories || []);
@@ -97,6 +101,8 @@ const AgencyDashboard = () => {
         message: 'Erreur lors du chargement des données',
         severity: 'error'
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -379,6 +385,11 @@ const AgencyDashboard = () => {
         <Typography>Chargement...</Typography>
       </Box>
     );
+  }
+
+  // Afficher le skeleton pendant le chargement des données
+  if (loading) {
+    return <DashboardSkeleton />;
   }
 
   return (

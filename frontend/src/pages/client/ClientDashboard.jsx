@@ -32,6 +32,7 @@ import {
   Edit as EditIcon
 } from '@mui/icons-material';
 import { getUserFromStorage } from '../../utils/storage';
+import { DashboardSkeleton } from '../../components/SkeletonLoader';
 import apiFetch from '../../api/apiFetch';
 
 const ClientDashboard = () => {
@@ -118,15 +119,9 @@ const ClientDashboard = () => {
     );
   }
 
+  // Afficher le skeleton pendant le chargement des données
   if (loading) {
-    return (
-      <Box sx={{ p: 3 }}>
-        <Typography variant="h4" gutterBottom>
-          Dashboard Client
-        </Typography>
-        <Typography>Chargement...</Typography>
-      </Box>
-    );
+    return <DashboardSkeleton />;
   }
 
   const confirmedReservations = reservations.filter(r => r.status === 'confirmed').length;
