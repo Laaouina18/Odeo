@@ -69,7 +69,7 @@ const Home = () => {
         pt: 10, 
         pb: 8, 
         textAlign: 'center', 
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
+        background: 'linear-gradient(135deg, rgb(129, 39, 85) 0%, rgba(129, 39, 85, 0.8) 100%)', 
         color: '#fff',
         position: 'relative',
         overflow: 'hidden'

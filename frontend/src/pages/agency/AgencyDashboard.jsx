@@ -390,7 +390,16 @@ const AgencyDashboard = () => {
       {/* Statistiques */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+          <Card sx={{ 
+            background: 'linear-gradient(135deg, rgb(129, 39, 85) 0%, rgba(129, 39, 85, 0.8) 100%)',
+            borderRadius: '20px',
+            boxShadow: '0 12px 40px rgba(129, 39, 85, 0.3)',
+            transition: 'all 0.3s ease-in-out',
+            '&:hover': {
+              transform: 'translateY(-5px)',
+              boxShadow: '0 20px 60px rgba(129, 39, 85, 0.4)',
+            }
+          }}>
             <CardContent sx={{ color: 'white' }}>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
@@ -408,7 +417,16 @@ const AgencyDashboard = () => {
         </Grid>
 
         <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }}>
+          <Card sx={{ 
+            background: 'linear-gradient(135deg, rgba(129, 39, 85, 0.9) 0%, rgba(129, 39, 85, 0.7) 100%)',
+            borderRadius: '20px',
+            boxShadow: '0 12px 40px rgba(129, 39, 85, 0.25)',
+            transition: 'all 0.3s ease-in-out',
+            '&:hover': {
+              transform: 'translateY(-5px)',
+              boxShadow: '0 20px 60px rgba(129, 39, 85, 0.35)',
+            }
+          }}>
             <CardContent sx={{ color: 'white' }}>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
@@ -426,7 +444,16 @@ const AgencyDashboard = () => {
         </Grid>
 
         <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' }}>
+          <Card sx={{ 
+            background: 'linear-gradient(135deg, rgba(129, 39, 85, 0.8) 0%, rgba(129, 39, 85, 0.6) 100%)',
+            borderRadius: '20px',
+            boxShadow: '0 12px 40px rgba(129, 39, 85, 0.2)',
+            transition: 'all 0.3s ease-in-out',
+            '&:hover': {
+              transform: 'translateY(-5px)',
+              boxShadow: '0 20px 60px rgba(129, 39, 85, 0.3)',
+            }
+          }}>
             <CardContent sx={{ color: 'white' }}>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
@@ -444,7 +471,16 @@ const AgencyDashboard = () => {
         </Grid>
 
         <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)' }}>
+          <Card sx={{ 
+            background: 'linear-gradient(135deg, rgba(129, 39, 85, 0.7) 0%, rgba(129, 39, 85, 0.5) 100%)',
+            borderRadius: '20px',
+            boxShadow: '0 12px 40px rgba(129, 39, 85, 0.15)',
+            transition: 'all 0.3s ease-in-out',
+            '&:hover': {
+              transform: 'translateY(-5px)',
+              boxShadow: '0 20px 60px rgba(129, 39, 85, 0.25)',
+            }
+          }}>
             <CardContent sx={{ color: 'white' }}>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
@@ -473,9 +509,9 @@ const AgencyDashboard = () => {
             startIcon={<AddIcon />}
             onClick={() => setOpenServiceDialog(true)}
             sx={{
-              background: 'linear-gradient(45deg, #667eea 30%, #764ba2 90%)',
+              background: 'linear-gradient(45deg, rgb(129, 39, 85) 30%, rgba(129, 39, 85, 0.8) 90%)',
               '&:hover': {
-                background: 'linear-gradient(45deg, #5a6fd8 30%, #6a4190 90%)',
+                background: 'linear-gradient(45deg, rgba(129, 39, 85, 0.9) 30%, rgb(129, 39, 85) 90%)',
               }
             }}
           >

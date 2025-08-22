@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import theme from './theme/theme';
+import './styles/global.css';
 
 function App() {
   return (

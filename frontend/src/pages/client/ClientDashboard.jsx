@@ -137,20 +137,42 @@ const ClientDashboard = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom sx={{ mb: 4, fontWeight: 'bold' }}>
+      <Typography 
+        variant="h3" 
+        gutterBottom 
+        sx={{ 
+          mb: 4, 
+          fontWeight: 'bold',
+          background: 'linear-gradient(135deg, rgb(129, 39, 85), rgba(129, 39, 85, 0.7))',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+          textAlign: 'center'
+        }}
+      >
         Bonjour, {user.name}!
       </Typography>
 
       {/* Statistiques Client */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-            <CardContent sx={{ color: 'white', textAlign: 'center' }}>
-              <EventNote sx={{ fontSize: 40, mb: 1 }} />
-              <Typography variant="h4" fontWeight="bold">
+          <Card 
+            className="glass-card animate-fade-in-up"
+            sx={{ 
+              background: 'linear-gradient(135deg, rgb(129, 39, 85) 0%, rgba(129, 39, 85, 0.8) 100%)',
+              boxShadow: '0 8px 32px rgba(129, 39, 85, 0.3)',
+              '&:hover': {
+                transform: 'translateY(-8px)',
+                boxShadow: '0 16px 48px rgba(129, 39, 85, 0.4)',
+              }
+            }}
+          >
+            <CardContent sx={{ color: 'white', textAlign: 'center', p: 3 }}>
+              <EventNote sx={{ fontSize: 48, mb: 2, opacity: 0.9 }} />
+              <Typography variant="h3" fontWeight="bold" sx={{ mb: 1 }}>
                 {reservations.length}
               </Typography>
-              <Typography variant="body2">
+              <Typography variant="h6" sx={{ opacity: 0.9, fontWeight: 500 }}>
                 Total Réservations
               </Typography>
             </CardContent>
@@ -158,13 +180,23 @@ const ClientDashboard = () => {
         </Grid>
 
         <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }}>
-            <CardContent sx={{ color: 'white', textAlign: 'center' }}>
-              <Star sx={{ fontSize: 40, mb: 1 }} />
-              <Typography variant="h4" fontWeight="bold">
+          <Card 
+            className="glass-card animate-fade-in-up"
+            sx={{ 
+              background: 'linear-gradient(135deg, rgba(129, 39, 85, 0.9) 0%, rgba(129, 39, 85, 0.7) 100%)',
+              boxShadow: '0 8px 32px rgba(129, 39, 85, 0.25)',
+              '&:hover': {
+                transform: 'translateY(-8px)',
+                boxShadow: '0 16px 48px rgba(129, 39, 85, 0.35)',
+              }
+            }}
+          >
+            <CardContent sx={{ color: 'white', textAlign: 'center', p: 3 }}>
+              <Star sx={{ fontSize: 48, mb: 2, opacity: 0.9 }} />
+              <Typography variant="h3" fontWeight="bold" sx={{ mb: 1 }}>
                 {confirmedReservations}
               </Typography>
-              <Typography variant="body2">
+              <Typography variant="h6" sx={{ opacity: 0.9, fontWeight: 500 }}>
                 Confirmées
               </Typography>
             </CardContent>
@@ -172,13 +204,23 @@ const ClientDashboard = () => {
         </Grid>
 
         <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' }}>
-            <CardContent sx={{ color: 'white', textAlign: 'center' }}>
-              <AccessTime sx={{ fontSize: 40, mb: 1 }} />
-              <Typography variant="h4" fontWeight="bold">
+          <Card 
+            className="glass-card animate-fade-in-up"
+            sx={{ 
+              background: 'linear-gradient(135deg, rgba(129, 39, 85, 0.8) 0%, rgba(129, 39, 85, 0.6) 100%)',
+              boxShadow: '0 8px 32px rgba(129, 39, 85, 0.2)',
+              '&:hover': {
+                transform: 'translateY(-8px)',
+                boxShadow: '0 16px 48px rgba(129, 39, 85, 0.3)',
+              }
+            }}
+          >
+            <CardContent sx={{ color: 'white', textAlign: 'center', p: 3 }}>
+              <AccessTime sx={{ fontSize: 48, mb: 2, opacity: 0.9 }} />
+              <Typography variant="h3" fontWeight="bold" sx={{ mb: 1 }}>
                 {pendingReservations}
               </Typography>
-              <Typography variant="body2">
+              <Typography variant="h6" sx={{ opacity: 0.9, fontWeight: 500 }}>
                 En Attente
               </Typography>
             </CardContent>
@@ -186,12 +228,22 @@ const ClientDashboard = () => {
         </Grid>
 
         <Grid item xs={12} sm={6} md={3}>
-          <Card sx={{ background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)' }}>
-            <CardContent sx={{ color: 'white', textAlign: 'center' }}>
-              <Typography variant="h4" fontWeight="bold">
+          <Card 
+            className="glass-card animate-fade-in-up"
+            sx={{ 
+              background: 'linear-gradient(135deg, rgba(129, 39, 85, 0.7) 0%, rgba(129, 39, 85, 0.5) 100%)',
+              boxShadow: '0 8px 32px rgba(129, 39, 85, 0.15)',
+              '&:hover': {
+                transform: 'translateY(-8px)',
+                boxShadow: '0 16px 48px rgba(129, 39, 85, 0.25)',
+              }
+            }}
+          >
+            <CardContent sx={{ color: 'white', textAlign: 'center', p: 3 }}>
+              <Typography variant="h3" fontWeight="bold" sx={{ mb: 1 }}>
                 {totalSpent.toFixed(0)} DH
               </Typography>
-              <Typography variant="body2">
+              <Typography variant="h6" sx={{ opacity: 0.9, fontWeight: 500 }}>
                 Total Dépensé
               </Typography>
             </CardContent>

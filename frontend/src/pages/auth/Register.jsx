@@ -73,32 +73,298 @@ const Register = () => {
   };
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" bgcolor="background.default">
-      <Paper elevation={3} sx={{ p: 4, minWidth: 350 }}>
-        <Typography variant="h5" mb={2} fontWeight={700}>Inscription</Typography>
+    <Box 
+      display="flex" 
+      justifyContent="center" 
+      alignItems="center" 
+      minHeight="100vh" 
+      sx={{
+        background: 'linear-gradient(135deg, rgba(129, 39, 85, 0.1) 0%, rgba(129, 39, 85, 0.05) 50%, #ffffff 100%)',
+        padding: 2
+      }}
+    >
+      <Paper 
+        elevation={24}
+        className="glass-card animate-fade-in-up"
+        sx={{ 
+          p: 5, 
+          minWidth: 450,
+          maxWidth: 500,
+          borderRadius: 4,
+          background: 'rgba(255, 255, 255, 0.95)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(129, 39, 85, 0.1)',
+          boxShadow: '0 20px 60px rgba(129, 39, 85, 0.15)'
+        }}
+      >
+        <Box textAlign="center" mb={4}>
+          <Typography 
+            variant="h3" 
+            fontWeight="bold"
+            sx={{
+              background: 'linear-gradient(135deg, rgb(129, 39, 85), rgba(129, 39, 85, 0.7))',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              mb: 1
+            }}
+          >
+            Inscription
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Créez votre compte pour commencer
+          </Typography>
+        </Box>
+        
         <form onSubmit={handleSubmit}>
-          <FormLabel>Je suis :</FormLabel>
-          <RadioGroup row value={role} onChange={handleRoleChange} sx={{ mb: 2 }}>
+          <FormLabel 
+            sx={{ 
+              color: 'rgb(129, 39, 85)', 
+              fontWeight: 600,
+              fontSize: '1.1rem'
+            }}
+          >
+            Je suis :
+          </FormLabel>
+          <RadioGroup 
+            row 
+            value={role} 
+            onChange={handleRoleChange} 
+            sx={{ 
+              mb: 3,
+              '& .MuiFormControlLabel-label': {
+                fontWeight: 500
+              },
+              '& .MuiRadio-root.Mui-checked': {
+                color: 'rgb(129, 39, 85)'
+              }
+            }}
+          >
             <FormControlLabel value="client" control={<Radio />} label="Client" />
             <FormControlLabel value="agency" control={<Radio />} label="Agence" />
           </RadioGroup>
-          <TextField label="Nom" name="name" value={form.name} onChange={handleChange} fullWidth required sx={{ mb: 2 }} />
-          <TextField label="Email" name="email" value={form.email} onChange={handleChange} fullWidth required sx={{ mb: 2 }} />
-          <TextField label="Mot de passe" name="password" type="password" value={form.password} onChange={handleChange} fullWidth required sx={{ mb: 2 }} />
+          
+          <TextField 
+            label="Nom" 
+            name="name" 
+            value={form.name} 
+            onChange={handleChange} 
+            fullWidth 
+            required 
+            sx={{ 
+              mb: 2,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 2,
+                '&:hover fieldset': {
+                  borderColor: 'rgba(129, 39, 85, 0.5)',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'rgb(129, 39, 85)',
+                },
+              },
+            }} 
+          />
+          
+          <TextField 
+            label="Email" 
+            name="email" 
+            value={form.email} 
+            onChange={handleChange} 
+            fullWidth 
+            required 
+            sx={{ 
+              mb: 2,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 2,
+                '&:hover fieldset': {
+                  borderColor: 'rgba(129, 39, 85, 0.5)',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'rgb(129, 39, 85)',
+                },
+              },
+            }} 
+          />
+          
+          <TextField 
+            label="Mot de passe" 
+            name="password" 
+            type="password" 
+            value={form.password} 
+            onChange={handleChange} 
+            fullWidth 
+            required 
+            sx={{ 
+              mb: 2,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 2,
+                '&:hover fieldset': {
+                  borderColor: 'rgba(129, 39, 85, 0.5)',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'rgb(129, 39, 85)',
+                },
+              },
+            }} 
+          />
+          
           {role === 'agency' && (
-            <>
-              <TextField label="Nom de l'agence" name="agency_name" value={form.agency_name} onChange={handleChange} fullWidth required sx={{ mb: 2 }} />
-              <TextField label="Email de l'agence" name="agency_email" value={form.agency_email} onChange={handleChange} fullWidth required sx={{ mb: 2 }} />
-              <TextField label="Téléphone de l'agence" name="agency_phone" value={form.agency_phone} onChange={handleChange} fullWidth sx={{ mb: 2 }} />
-              <TextField label="Description de l'agence" name="agency_description" value={form.agency_description} onChange={handleChange} fullWidth multiline rows={2} sx={{ mb: 2 }} />
-            </>
+            <Box sx={{ 
+              p: 3, 
+              borderRadius: 2, 
+              background: 'rgba(129, 39, 85, 0.02)',
+              border: '1px solid rgba(129, 39, 85, 0.1)',
+              mb: 2
+            }}>
+              <Typography variant="h6" sx={{ mb: 2, color: 'rgb(129, 39, 85)', fontWeight: 600 }}>
+                Informations de l'agence
+              </Typography>
+              
+              <TextField 
+                label="Nom de l'agence" 
+                name="agency_name" 
+                value={form.agency_name} 
+                onChange={handleChange} 
+                fullWidth 
+                required 
+                sx={{ 
+                  mb: 2,
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    '&:hover fieldset': {
+                      borderColor: 'rgba(129, 39, 85, 0.5)',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: 'rgb(129, 39, 85)',
+                    },
+                  },
+                }} 
+              />
+              
+              <TextField 
+                label="Email de l'agence" 
+                name="agency_email" 
+                value={form.agency_email} 
+                onChange={handleChange} 
+                fullWidth 
+                required 
+                sx={{ 
+                  mb: 2,
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    '&:hover fieldset': {
+                      borderColor: 'rgba(129, 39, 85, 0.5)',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: 'rgb(129, 39, 85)',
+                    },
+                  },
+                }} 
+              />
+              
+              <TextField 
+                label="Téléphone de l'agence" 
+                name="agency_phone" 
+                value={form.agency_phone} 
+                onChange={handleChange} 
+                fullWidth 
+                sx={{ 
+                  mb: 2,
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    '&:hover fieldset': {
+                      borderColor: 'rgba(129, 39, 85, 0.5)',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: 'rgb(129, 39, 85)',
+                    },
+                  },
+                }} 
+              />
+              
+              <TextField 
+                label="Description de l'agence" 
+                name="agency_description" 
+                value={form.agency_description} 
+                onChange={handleChange} 
+                fullWidth 
+                multiline 
+                rows={3} 
+                sx={{ 
+                  mb: 2,
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 2,
+                    '&:hover fieldset': {
+                      borderColor: 'rgba(129, 39, 85, 0.5)',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: 'rgb(129, 39, 85)',
+                    },
+                  },
+                }} 
+              />
+            </Box>
           )}
-          <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }} disabled={loading}>
-            {loading ? 'Inscription...' : 'Inscription'}
+          
+          <Button 
+            type="submit" 
+            variant="contained" 
+            fullWidth 
+            disabled={loading}
+            sx={{ 
+              mt: 3,
+              mb: 2,
+              py: 1.5,
+              fontSize: '1.1rem',
+              fontWeight: 600,
+              borderRadius: 2,
+              background: 'linear-gradient(135deg, rgb(129, 39, 85) 0%, rgba(129, 39, 85, 0.8) 100%)',
+              boxShadow: '0 6px 20px rgba(129, 39, 85, 0.3)',
+              '&:hover': {
+                background: 'linear-gradient(135deg, rgba(129, 39, 85, 0.9) 0%, rgba(129, 39, 85, 0.7) 100%)',
+                boxShadow: '0 8px 25px rgba(129, 39, 85, 0.4)',
+                transform: 'translateY(-2px)',
+              },
+              '&:disabled': {
+                background: 'rgba(129, 39, 85, 0.3)',
+              }
+            }}
+          >
+            {loading ? 'Inscription...' : 'S\'inscrire'}
           </Button>
         </form>
-        {success && <Typography color="success.main" mt={2}>{success}</Typography>}
-        {error && <Typography color="error.main" mt={2}>{error}</Typography>}
+        
+        {success && (
+          <Box 
+            sx={{ 
+              mt: 2, 
+              p: 2, 
+              borderRadius: 2, 
+              background: 'rgba(76, 175, 80, 0.1)',
+              border: '1px solid rgba(76, 175, 80, 0.3)'
+            }}
+          >
+            <Typography color="success.main" fontWeight={600}>
+              {success}
+            </Typography>
+          </Box>
+        )}
+        
+        {error && (
+          <Box 
+            sx={{ 
+              mt: 2, 
+              p: 2, 
+              borderRadius: 2, 
+              background: 'rgba(244, 67, 54, 0.1)',
+              border: '1px solid rgba(244, 67, 54, 0.3)'
+            }}
+          >
+            <Typography color="error.main" fontWeight={600}>
+              {error}
+            </Typography>
+          </Box>
+        )}
       </Paper>
     </Box>
   );

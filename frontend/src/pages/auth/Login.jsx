@@ -69,23 +69,149 @@ const Login = () => {
   };
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" bgcolor="background.default">
-      <Paper elevation={3} sx={{ p: 4, minWidth: 350 }}>
-        <Typography variant="h5" mb={2} fontWeight={700}>Connexion</Typography>
+    <Box 
+      display="flex" 
+      justifyContent="center" 
+      alignItems="center" 
+      minHeight="100vh" 
+      sx={{
+        background: 'linear-gradient(135deg, rgba(129, 39, 85, 0.1) 0%, rgba(129, 39, 85, 0.05) 50%, #ffffff 100%)',
+        padding: 2
+      }}
+    >
+      <Paper 
+        elevation={24}
+        className="glass-card animate-fade-in-up"
+        sx={{ 
+          p: 5, 
+          minWidth: 400,
+          maxWidth: 450,
+          borderRadius: 4,
+          background: 'rgba(255, 255, 255, 0.95)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(129, 39, 85, 0.1)',
+          boxShadow: '0 20px 60px rgba(129, 39, 85, 0.15)'
+        }}
+      >
+        <Box textAlign="center" mb={4}>
+          <Typography 
+            variant="h3" 
+            fontWeight="bold"
+            sx={{
+              background: 'linear-gradient(135deg, rgb(129, 39, 85), rgba(129, 39, 85, 0.7))',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              mb: 1
+            }}
+          >
+            Connexion
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Accédez à votre espace personnel
+          </Typography>
+        </Box>
+        
         <form onSubmit={handleSubmit}>
-          <TextField label="Email" name="email" type="email" fullWidth margin="normal" required value={form.email} onChange={handleChange} />
-          <TextField label="Mot de passe" name="password" type="password" fullWidth margin="normal" required value={form.password} onChange={handleChange} />
-          <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }} disabled={loading}>
+          <TextField 
+            label="Email" 
+            name="email" 
+            type="email" 
+            fullWidth 
+            margin="normal" 
+            required 
+            value={form.email} 
+            onChange={handleChange}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 2,
+                '&:hover fieldset': {
+                  borderColor: 'rgba(129, 39, 85, 0.5)',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'rgb(129, 39, 85)',
+                },
+              },
+            }}
+          />
+          <TextField 
+            label="Mot de passe" 
+            name="password" 
+            type="password" 
+            fullWidth 
+            margin="normal" 
+            required 
+            value={form.password} 
+            onChange={handleChange}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 2,
+                '&:hover fieldset': {
+                  borderColor: 'rgba(129, 39, 85, 0.5)',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'rgb(129, 39, 85)',
+                },
+              },
+            }}
+          />
+          <Button 
+            type="submit" 
+            variant="contained" 
+            fullWidth 
+            disabled={loading}
+            sx={{ 
+              mt: 3,
+              mb: 2,
+              py: 1.5,
+              fontSize: '1.1rem',
+              fontWeight: 600,
+              borderRadius: 2,
+              background: 'linear-gradient(135deg, rgb(129, 39, 85) 0%, rgba(129, 39, 85, 0.8) 100%)',
+              boxShadow: '0 6px 20px rgba(129, 39, 85, 0.3)',
+              '&:hover': {
+                background: 'linear-gradient(135deg, rgba(129, 39, 85, 0.9) 0%, rgba(129, 39, 85, 0.7) 100%)',
+                boxShadow: '0 8px 25px rgba(129, 39, 85, 0.4)',
+                transform: 'translateY(-2px)',
+              },
+              '&:disabled': {
+                background: 'rgba(129, 39, 85, 0.3)',
+              }
+            }}
+          >
             {loading ? 'Connexion...' : 'Se connecter'}
           </Button>
         </form>
+        
         {!isAuthenticated && (
-          <Typography variant="body2" mt={2} color="text.secondary">
-            Pas de compte ? <a href="/register">Inscrivez-vous</a>
-          </Typography>
+          <Box textAlign="center" mt={3}>
+            <Typography variant="body2" color="text.secondary">
+              Pas de compte ?{' '}
+              <Typography 
+                component="a" 
+                href="/register" 
+                variant="body2"
+                sx={{
+                  color: 'rgb(129, 39, 85)',
+                  textDecoration: 'none',
+                  fontWeight: 600,
+                  '&:hover': {
+                    textDecoration: 'underline',
+                  }
+                }}
+              >
+                Inscrivez-vous
+              </Typography>
+            </Typography>
+          </Box>
         )}
       </Paper>
-      <AlertSnackbar open={alertOpen} onClose={() => setAlertOpen(false)} severity={error ? 'error' : 'success'} message={error || success} />
+      <AlertSnackbar 
+        open={alertOpen} 
+        onClose={() => setAlertOpen(false)} 
+        severity={error ? 'error' : 'success'} 
+        message={error || success} 
+      />
     </Box>
   );
 };
