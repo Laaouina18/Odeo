@@ -1,0 +1,43 @@
+{
+  "name": "odeo",
+  "version": "1.0.0",
+  "description": "🏛️ ODEO - Plateforme de Services moderne avec React.js et Laravel",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "npm run install:backend && npm run install:frontend",
+    "install:backend": "cd backend && composer install",
+    "install:frontend": "cd frontend && npm install",
+    "setup:backend": "cd backend && cp .env.example .env && php artisan key:generate && php artisan jwt:secret",
+    "setup:frontend": "cd frontend && echo 'VITE_API_BASE_URL=http://localhost:8000/api\nVITE_APP_URL=http://localhost:5173' > .env",
+    "migrate": "cd backend && php artisan migrate",
+    "seed": "cd backend && php artisan db:seed",
+    "migrate:fresh": "cd backend && php artisan migrate:fresh --seed",
+    "dev:backend": "cd backend && php artisan serve",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build:frontend": "cd frontend && npm run build",
+    "start": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "clear:cache": "cd backend && php artisan cache:clear && php artisan config:clear && php artisan view:clear",
+    "logs": "cd backend && tail -f storage/logs/laravel.log"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Laaouina18/Odeo.git"
+  },
+  "keywords": [
+    "laravel",
+    "react",
+    "services",
+    "booking",
+    "platform",
+    "odeo"
+  ],
+  "author": "Laaouina18",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}

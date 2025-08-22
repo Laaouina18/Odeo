@@ -43,6 +43,7 @@ import { getCategories } from '../../api/categories';
 
 const ITEMS_PER_PAGE = 12;
 const PRIMARY_COLOR = 'rgb(129, 39, 85)';
+const DESCRIPTION_PREVIEW_LENGTH = 100; // Limite de caractères pour l'aperçu
 
 const Home = () => {
   const [search, setSearch] = useState('');
@@ -54,6 +55,13 @@ const Home = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
+
+  // Fonction pour tronquer la description
+  const truncateDescription = (text, maxLength) => {
+    if (!text) return '';
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  };
 
   // Charger les services et catégories au montage
   useEffect(() => {
@@ -292,6 +300,11 @@ const Home = () => {
                   {filteredServices.length} service{filteredServices.length > 1 ? 's' : ''} trouvé{filteredServices.length > 1 ? 's' : ''}
                   {search && ` pour "${search}"`}
                   {selectedCategory && ` dans "${selectedCategory}"`}
+                  {filteredServices.length > ITEMS_PER_PAGE && (
+                    <Box component="span" sx={{ ml: 2, fontWeight: 600, color: PRIMARY_COLOR }}>
+                      Page {currentPage} sur {totalPages}
+                    </Box>
+                  )}
                 </Typography>
               )}
             </Box>
@@ -417,14 +430,14 @@ const Home = () => {
                           mb={2}
                           sx={{ 
                             display: '-webkit-box',
-                            WebkitLineClamp: 3,
+                            WebkitLineClamp: 2,
                             WebkitBoxOrient: 'vertical',
                             overflow: 'hidden',
-                            height: '4.5em',
+                            height: '3em',
                             lineHeight: 1.5
                           }}
                         >
-                          {service.description}
+                          {truncateDescription(service.description, DESCRIPTION_PREVIEW_LENGTH)}
                         </Typography>
                         
                         <Box display="flex" alignItems="center" mb={2}>
@@ -495,15 +508,20 @@ const Home = () => {
             )}
           </Grid>
           
-          {/* Pagination */}
+          {/* Pagination améliorée */}
           {!loading && totalPages > 1 && (
-            <Box display="flex" justifyContent="center" mt={6}>
+            <Box display="flex" justifyContent="center" alignItems="center" flexDirection="column" gap={2} mt={6}>
+              <Typography variant="body2" color="text.secondary">
+                Affichage de {((currentPage - 1) * ITEMS_PER_PAGE) + 1} à {Math.min(currentPage * ITEMS_PER_PAGE, filteredServices.length)} sur {filteredServices.length} services
+              </Typography>
               <Pagination 
                 count={totalPages}
                 page={currentPage}
                 onChange={handlePageChange}
                 color="primary"
                 size="large"
+                showFirstButton
+                showLastButton
                 sx={{
                   '& .MuiPaginationItem-root': {
                     color: PRIMARY_COLOR,
@@ -514,6 +532,9 @@ const Home = () => {
                         backgroundColor: PRIMARY_COLOR,
                         filter: 'brightness(1.1)'
                       }
+                    },
+                    '&:hover': {
+                      backgroundColor: `${PRIMARY_COLOR}10`
                     }
                   }
                 }}
@@ -549,7 +570,7 @@ const Home = () => {
         </Container>
       </Box>
 
-      {/* Dialog détails du service */}
+      {/* Dialog détails du service avec nouvelle image */}
       <Dialog 
         open={dialogOpen} 
         onClose={handleCloseDialog}
@@ -566,9 +587,11 @@ const Home = () => {
                 <CardMedia
                   component="img"
                   height="300"
-                  image={selectedService.images && selectedService.images.length > 0
-                    ? `http://localhost:8000/storage/${selectedService.images[0]}` 
-                    : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=300&fit=crop'
+                  image={selectedService.images && selectedService.images.length > 1
+                    ? `http://localhost:8000/storage/${selectedService.images[1]}` // Deuxième image si disponible
+                    : selectedService.images && selectedService.images.length > 0
+                    ? `http://localhost:8000/storage/${selectedService.images[0]}` // Première image sinon
+                    : 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&h=300&fit=crop&auto=format' // Image par défaut différente
                   }
                   alt={selectedService.title}
                   sx={{ objectFit: 'cover' }}
@@ -630,7 +653,7 @@ const Home = () => {
               <Divider sx={{ my: 3 }} />
               
               <Typography variant="h6" fontWeight={600} mb={2}>
-                Description
+                Description complète
               </Typography>
               <Typography variant="body1" color="text.secondary" mb={4} lineHeight={1.7}>
                 {selectedService.description}
