@@ -104,7 +104,7 @@ const Navbar = () => {
     { text: 'Accueil', icon: <HomeIcon />, path: '/' },
     ...(authenticated ? [
       ...(user?.role === 'client' ? [
-        { text: 'Mon Dashboard', icon: <DashboardIcon />, path: '/client/dashboard' },
+
         { text: 'Mon Espace', icon: <PersonIcon />, path: '/client-space' }
       ] : []),
       ...(user?.role === 'agency' ? [
@@ -285,24 +285,7 @@ const Navbar = () => {
                 <>
                   {user?.role === 'client' && (
                     <>
-                      <Button 
-                        color="inherit" 
-                        component={Link} 
-                        to="/client/dashboard"
-                        startIcon={<DashboardIcon />}
-                        sx={{ 
-                          textTransform: 'none',
-                          fontSize: '0.95rem',
-                          fontWeight: 600,
-                          px: 2,
-                          borderRadius: 2,
-                          '&:hover': {
-                            backgroundColor: 'rgba(255,255,255,0.1)'
-                          }
-                        }}
-                      >
-                        Dashboard
-                      </Button>
+                 
                       <Button 
                         color="inherit" 
                         component={Link} 
