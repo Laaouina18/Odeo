@@ -57,11 +57,8 @@ const Login = () => {
         setAlertOpen(true);
         // Navigation après mise à jour Redux
         setTimeout(() => {
-          const role = action.payload.role;
-          if (role === 'client') navigate('/client/dashboard');
-          else if (role === 'agency') navigate('/agency/dashboard');
-          else if (role === 'admin') navigate('/admin/dashboard');
-          else navigate('/');
+
+          navigate('/');
         }, 1200);
       } else {
         setError('Erreur de connexion');

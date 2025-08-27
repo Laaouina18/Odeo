@@ -19,9 +19,9 @@ const Register = () => {
   React.useEffect(() => {
     if (isAuthenticated && user) {
       // Redirige vers le dashboard selon le rôle
-      if (user.role === 'client') navigate('/client/dashboard');
-      else if (user.role === 'agency') navigate('/agency/dashboard');
-      else if (user.role === 'admin') navigate('/admin/dashboard');
+      if (user.role === 'client') navigate('/');
+      else if (user.role === 'agency') navigate('/');
+      else if (user.role === 'admin') navigate('/');
     }
   }, [isAuthenticated, user, navigate]);
   const [role, setRole] = useState('client');
