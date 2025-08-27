@@ -25,7 +25,8 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  MenuItem
+  MenuItem,
+  Tooltip
 } from '@mui/material';
 import {
   People,
@@ -42,12 +43,11 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
   PieChart,
   Pie,
-  Cell
+  Cell,
+  Legend,
+  ResponsiveContainer
 } from 'recharts';
 import { getUserFromStorage } from '../../utils/storage';
 
@@ -93,7 +93,19 @@ const AdminDashboard = () => {
     password: ''
   });
 
-  const COLORS = ['rgb(129, 39, 85)', 'rgba(129, 39, 85, 0.8)', 'rgba(129, 39, 85, 0.6)', 'rgba(129, 39, 85, 0.4)'];
+  // Palette de couleurs professionnelle
+  const PRIMARY_COLOR = '#1e3c72';
+  const SECONDARY_COLOR = '#2a5298';
+  const VIOLET_BLUE = '#667eea';
+  const VIOLET_PURPLE = '#764ba2';
+  const ACCENT_RED = '#ff4d4f';
+  
+  const COLORS = [
+    `linear-gradient(135deg, ${PRIMARY_COLOR}, ${SECONDARY_COLOR})`,
+    `linear-gradient(135deg, ${VIOLET_BLUE}, ${VIOLET_PURPLE})`,
+    `linear-gradient(135deg, ${ACCENT_RED}, #ff7875)`,
+    `linear-gradient(135deg, ${SECONDARY_COLOR}, ${VIOLET_BLUE})`
+  ];
 
   useEffect(() => {
     const userData = getUserFromStorage();
@@ -279,37 +291,148 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom sx={{ mb: 4, fontWeight: 'bold' }}>
-        Dashboard Admin - {user.name}
-      </Typography>
+    <Box sx={{ 
+      p: { xs: 2, md: 3 },
+      background: `linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.9) 0%, 
+        rgba(248, 250, 252, 0.95) 25%,
+        rgba(241, 245, 249, 0.9) 50%,
+        rgba(226, 232, 240, 0.95) 100%
+      )`,
+      backdropFilter: 'blur(20px)',
+      minHeight: '100vh',
+      position: 'relative',
+      '&::before': {
+        content: '""',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: `linear-gradient(45deg, ${PRIMARY_COLOR}08, ${VIOLET_BLUE}05, ${ACCENT_RED}03)`,
+        zIndex: -1,
+      }
+    }}>
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        mb: 4,
+        p: 3,
+        background: 'rgba(255, 255, 255, 0.8)',
+        backdropFilter: 'blur(20px)',
+        borderRadius: 4,
+        border: '1px solid rgba(255, 255, 255, 0.3)',
+        boxShadow: `0 8px 32px ${PRIMARY_COLOR}10, 0 4px 16px rgba(0, 0, 0, 0.05)`
+      }}>
+        <Typography variant="h4" sx={{ 
+          fontWeight: 700,
+          background: `linear-gradient(135deg, ${PRIMARY_COLOR}, ${VIOLET_BLUE})`,
+          backgroundClip: 'text',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          fontSize: { xs: '1.8rem', md: '2.5rem' }
+        }}>
+          Dashboard Admin
+        </Typography>
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 2,
+          background: `linear-gradient(135deg, ${PRIMARY_COLOR}15, ${VIOLET_BLUE}10)`,
+          p: 2,
+          borderRadius: 3,
+          border: '1px solid rgba(255, 255, 255, 0.2)'
+        }}>
+          <Avatar sx={{
+            background: `linear-gradient(135deg, ${PRIMARY_COLOR}, ${VIOLET_BLUE})`,
+            fontWeight: 600
+          }}>
+            {user.name.charAt(0)}
+          </Avatar>
+          <Typography variant="h6" sx={{ 
+            color: PRIMARY_COLOR,
+            fontWeight: 600 
+          }}>
+            {user.name}
+          </Typography>
+        </Box>
+      </Box>
 
       {/* Statistiques principales */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ 
-            background: 'linear-gradient(135deg, rgb(129, 39, 85) 0%, rgba(129, 39, 85, 0.8) 100%)',
-            borderRadius: '20px',
-            boxShadow: '0 12px 40px rgba(129, 39, 85, 0.3)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(10px)',
-            transition: 'all 0.3s ease-in-out',
+            background: `linear-gradient(135deg, ${PRIMARY_COLOR} 0%, ${SECONDARY_COLOR} 100%)`,
+            borderRadius: 4,
+            boxShadow: `0 12px 40px ${PRIMARY_COLOR}25, 0 6px 20px rgba(0, 0, 0, 0.08)`,
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            backdropFilter: 'blur(20px)',
+            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+            position: 'relative',
+            overflow: 'hidden',
             '&:hover': {
-              transform: 'translateY(-8px)',
-              boxShadow: '0 20px 60px rgba(129, 39, 85, 0.4)',
+              transform: 'translateY(-8px) scale(1.02)',
+              boxShadow: `0 20px 60px ${PRIMARY_COLOR}35, 0 10px 30px rgba(0, 0, 0, 0.15)`,
+            },
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(255, 255, 255, 0.15)',
+              opacity: 0,
+              transition: 'opacity 0.3s ease',
+            },
+            '&:hover::before': {
+              opacity: 1,
+            },
+            '&::after': {
+              content: '""',
+              position: 'absolute',
+              top: -50,
+              right: -50,
+              width: 100,
+              height: 100,
+              background: 'rgba(255, 255, 255, 0.1)',
+              borderRadius: '50%',
+              transition: 'all 0.3s ease',
+            },
+            '&:hover::after': {
+              top: -30,
+              right: -30,
+              width: 140,
+              height: 140,
             }
           }}>
-            <CardContent sx={{ color: 'white' }}>
+            <CardContent sx={{ color: 'white', p: 3, position: 'relative', zIndex: 1 }}>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
-                  <Typography variant="h4" fontWeight="bold">
+                  <Typography variant="h3" fontWeight={700} sx={{ 
+                    mb: 1,
+                    textShadow: '0 2px 10px rgba(0, 0, 0, 0.2)' 
+                  }}>
                     {stats.total_users || 0}
                   </Typography>
-                  <Typography variant="body2">
+                  <Typography variant="body1" sx={{ 
+                    opacity: 0.95, 
+                    fontWeight: 500,
+                    textShadow: '0 1px 5px rgba(0, 0, 0, 0.2)' 
+                  }}>
                     Total Utilisateurs
                   </Typography>
                 </Box>
-                <People sx={{ fontSize: 40, opacity: 0.8 }} />
+                <People sx={{ 
+                  fontSize: 48, 
+                  opacity: 0.9,
+                  filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2))',
+                  transition: 'transform 0.3s ease',
+                  '.MuiCard-root:hover &': {
+                    transform: 'scale(1.1) rotate(5deg)'
+                  }
+                }} />
               </Box>
             </CardContent>
           </Card>
@@ -317,28 +440,76 @@ const AdminDashboard = () => {
 
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ 
-            background: 'linear-gradient(135deg, rgba(129, 39, 85, 0.9) 0%, rgba(129, 39, 85, 0.7) 100%)',
-            borderRadius: '20px',
-            boxShadow: '0 12px 40px rgba(129, 39, 85, 0.25)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(10px)',
-            transition: 'all 0.3s ease-in-out',
+            background: `linear-gradient(135deg, ${VIOLET_BLUE} 0%, ${VIOLET_PURPLE} 100%)`,
+            borderRadius: 4,
+            boxShadow: `0 12px 40px ${VIOLET_BLUE}25, 0 6px 20px rgba(0, 0, 0, 0.08)`,
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            backdropFilter: 'blur(20px)',
+            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+            position: 'relative',
+            overflow: 'hidden',
             '&:hover': {
-              transform: 'translateY(-8px)',
-              boxShadow: '0 20px 60px rgba(129, 39, 85, 0.35)',
+              transform: 'translateY(-8px) scale(1.02)',
+              boxShadow: `0 20px 60px ${VIOLET_BLUE}35, 0 10px 30px rgba(0, 0, 0, 0.15)`,
+            },
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(255, 255, 255, 0.15)',
+              opacity: 0,
+              transition: 'opacity 0.3s ease',
+            },
+            '&:hover::before': {
+              opacity: 1,
+            },
+            '&::after': {
+              content: '""',
+              position: 'absolute',
+              top: -50,
+              right: -50,
+              width: 100,
+              height: 100,
+              background: 'rgba(255, 255, 255, 0.1)',
+              borderRadius: '50%',
+              transition: 'all 0.3s ease',
+            },
+            '&:hover::after': {
+              top: -30,
+              right: -30,
+              width: 140,
+              height: 140,
             }
           }}>
-            <CardContent sx={{ color: 'white' }}>
+            <CardContent sx={{ color: 'white', p: 3, position: 'relative', zIndex: 1 }}>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
-                  <Typography variant="h4" fontWeight="bold">
+                  <Typography variant="h3" fontWeight={700} sx={{ 
+                    mb: 1,
+                    textShadow: '0 2px 10px rgba(0, 0, 0, 0.2)' 
+                  }}>
                     {stats.total_agencies || 0}
                   </Typography>
-                  <Typography variant="body2">
+                  <Typography variant="body1" sx={{ 
+                    opacity: 0.95, 
+                    fontWeight: 500,
+                    textShadow: '0 1px 5px rgba(0, 0, 0, 0.2)' 
+                  }}>
                     Total Agences
                   </Typography>
                 </Box>
-                <Business sx={{ fontSize: 40, opacity: 0.8 }} />
+                <Business sx={{ 
+                  fontSize: 48, 
+                  opacity: 0.9,
+                  filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2))',
+                  transition: 'transform 0.3s ease',
+                  '.MuiCard-root:hover &': {
+                    transform: 'scale(1.1) rotate(-5deg)'
+                  }
+                }} />
               </Box>
             </CardContent>
           </Card>
@@ -346,28 +517,76 @@ const AdminDashboard = () => {
 
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ 
-            background: 'linear-gradient(135deg, rgba(129, 39, 85, 0.8) 0%, rgba(129, 39, 85, 0.6) 100%)',
-            borderRadius: '20px',
-            boxShadow: '0 12px 40px rgba(129, 39, 85, 0.2)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(10px)',
-            transition: 'all 0.3s ease-in-out',
+            background: `linear-gradient(135deg, ${ACCENT_RED} 0%, #ff7875 100%)`,
+            borderRadius: 4,
+            boxShadow: `0 12px 40px ${ACCENT_RED}25, 0 6px 20px rgba(0, 0, 0, 0.08)`,
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            backdropFilter: 'blur(20px)',
+            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+            position: 'relative',
+            overflow: 'hidden',
             '&:hover': {
-              transform: 'translateY(-8px)',
-              boxShadow: '0 20px 60px rgba(129, 39, 85, 0.3)',
+              transform: 'translateY(-8px) scale(1.02)',
+              boxShadow: `0 20px 60px ${ACCENT_RED}35, 0 10px 30px rgba(0, 0, 0, 0.15)`,
+            },
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(255, 255, 255, 0.15)',
+              opacity: 0,
+              transition: 'opacity 0.3s ease',
+            },
+            '&:hover::before': {
+              opacity: 1,
+            },
+            '&::after': {
+              content: '""',
+              position: 'absolute',
+              top: -50,
+              right: -50,
+              width: 100,
+              height: 100,
+              background: 'rgba(255, 255, 255, 0.1)',
+              borderRadius: '50%',
+              transition: 'all 0.3s ease',
+            },
+            '&:hover::after': {
+              top: -30,
+              right: -30,
+              width: 140,
+              height: 140,
             }
           }}>
-            <CardContent sx={{ color: 'white' }}>
+            <CardContent sx={{ color: 'white', p: 3, position: 'relative', zIndex: 1 }}>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
-                  <Typography variant="h4" fontWeight="bold">
+                  <Typography variant="h3" fontWeight={700} sx={{ 
+                    mb: 1,
+                    textShadow: '0 2px 10px rgba(0, 0, 0, 0.2)' 
+                  }}>
                     {formatPrice(stats.total_commission || 0)}
                   </Typography>
-                  <Typography variant="body2">
+                  <Typography variant="body1" sx={{ 
+                    opacity: 0.95, 
+                    fontWeight: 500,
+                    textShadow: '0 1px 5px rgba(0, 0, 0, 0.2)' 
+                  }}>
                     Commissions Totales (20%)
                   </Typography>
                 </Box>
-                <MonetizationOn sx={{ fontSize: 40, opacity: 0.8 }} />
+                <MonetizationOn sx={{ 
+                  fontSize: 48, 
+                  opacity: 0.9,
+                  filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2))',
+                  transition: 'transform 0.3s ease',
+                  '.MuiCard-root:hover &': {
+                    transform: 'scale(1.1) rotate(10deg)'
+                  }
+                }} />
               </Box>
             </CardContent>
           </Card>
@@ -375,28 +594,76 @@ const AdminDashboard = () => {
 
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ 
-            background: 'linear-gradient(135deg, rgba(129, 39, 85, 0.7) 0%, rgba(129, 39, 85, 0.5) 100%)',
-            borderRadius: '20px',
-            boxShadow: '0 12px 40px rgba(129, 39, 85, 0.15)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(10px)',
-            transition: 'all 0.3s ease-in-out',
+            background: `linear-gradient(135deg, ${SECONDARY_COLOR} 0%, ${VIOLET_BLUE} 100%)`,
+            borderRadius: 4,
+            boxShadow: `0 12px 40px ${SECONDARY_COLOR}25, 0 6px 20px rgba(0, 0, 0, 0.08)`,
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            backdropFilter: 'blur(20px)',
+            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+            position: 'relative',
+            overflow: 'hidden',
             '&:hover': {
-              transform: 'translateY(-8px)',
-              boxShadow: '0 20px 60px rgba(129, 39, 85, 0.25)',
+              transform: 'translateY(-8px) scale(1.02)',
+              boxShadow: `0 20px 60px ${SECONDARY_COLOR}35, 0 10px 30px rgba(0, 0, 0, 0.15)`,
+            },
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(255, 255, 255, 0.15)',
+              opacity: 0,
+              transition: 'opacity 0.3s ease',
+            },
+            '&:hover::before': {
+              opacity: 1,
+            },
+            '&::after': {
+              content: '""',
+              position: 'absolute',
+              top: -50,
+              right: -50,
+              width: 100,
+              height: 100,
+              background: 'rgba(255, 255, 255, 0.1)',
+              borderRadius: '50%',
+              transition: 'all 0.3s ease',
+            },
+            '&:hover::after': {
+              top: -30,
+              right: -30,
+              width: 140,
+              height: 140,
             }
           }}>
-            <CardContent sx={{ color: 'white' }}>
+            <CardContent sx={{ color: 'white', p: 3, position: 'relative', zIndex: 1 }}>
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
-                  <Typography variant="h4" fontWeight="bold">
+                  <Typography variant="h3" fontWeight={700} sx={{ 
+                    mb: 1,
+                    textShadow: '0 2px 10px rgba(0, 0, 0, 0.2)' 
+                  }}>
                     {stats.total_reservations || 0}
                   </Typography>
-                  <Typography variant="body2">
+                  <Typography variant="body1" sx={{ 
+                    opacity: 0.95, 
+                    fontWeight: 500,
+                    textShadow: '0 1px 5px rgba(0, 0, 0, 0.2)' 
+                  }}>
                     Total Réservations
                   </Typography>
                 </Box>
-                <EventNote sx={{ fontSize: 40, opacity: 0.8 }} />
+                <EventNote sx={{ 
+                  fontSize: 48, 
+                  opacity: 0.9,
+                  filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2))',
+                  transition: 'transform 0.3s ease',
+                  '.MuiCard-root:hover &': {
+                    transform: 'scale(1.1) rotate(-10deg)'
+                  }
+                }} />
               </Box>
             </CardContent>
           </Card>
@@ -406,23 +673,92 @@ const AdminDashboard = () => {
       {/* Graphiques de commission */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} md={8}>
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
-              Évolution des Commissions par Mois
-            </Typography>
-            <ResponsiveContainer width="100%" height={300}>
+          <Paper sx={{ 
+            p: 4,
+            borderRadius: 4,
+            background: 'rgba(255, 255, 255, 0.95)',
+            backdropFilter: 'blur(30px)',
+            boxShadow: `0 12px 40px ${PRIMARY_COLOR}15, 0 6px 20px rgba(0, 0, 0, 0.05)`,
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            transition: 'all 0.3s ease',
+            position: 'relative',
+            overflow: 'hidden',
+            '&:hover': {
+              boxShadow: `0 16px 50px ${PRIMARY_COLOR}20, 0 8px 25px rgba(0, 0, 0, 0.08)`,
+              transform: 'translateY(-2px)',
+            },
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: 4,
+              background: `linear-gradient(90deg, ${PRIMARY_COLOR}, ${VIOLET_BLUE}, ${ACCENT_RED})`,
+            }
+          }}>
+            <Box sx={{ 
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+              mb: 3
+            }}>
+              <Box sx={{
+                width: 12,
+                height: 12,
+                borderRadius: '50%',
+                background: `linear-gradient(135deg, ${PRIMARY_COLOR}, ${VIOLET_BLUE})`
+              }} />
+              <Typography variant="h6" sx={{ 
+                fontWeight: 600,
+                color: PRIMARY_COLOR,
+                fontSize: '1.3rem'
+              }}>
+                Évolution des Commissions par Mois
+              </Typography>
+            </Box>
+            <ResponsiveContainer width="100%" height={320}>
               <LineChart data={monthlyData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip formatter={(value) => formatPrice(value)} />
+                <CartesianGrid strokeDasharray="3 3" stroke={`${PRIMARY_COLOR}15`} />
+                <XAxis 
+                  dataKey="month" 
+                  tick={{ fill: PRIMARY_COLOR, fontSize: 12, fontWeight: 500 }}
+                  axisLine={{ stroke: `${PRIMARY_COLOR}30` }}
+                />
+                <YAxis 
+                  tick={{ fill: PRIMARY_COLOR, fontSize: 12, fontWeight: 500 }}
+                  axisLine={{ stroke: `${PRIMARY_COLOR}30` }}
+                />
+                <Tooltip 
+                  formatter={(value) => formatPrice(value)}
+                  contentStyle={{
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    backdropFilter: 'blur(20px)',
+                    border: `1px solid ${PRIMARY_COLOR}30`,
+                    borderRadius: 12,
+                    boxShadow: `0 8px 32px ${PRIMARY_COLOR}20`
+                  }}
+                />
                 <Legend />
                 <Line 
                   type="monotone" 
                   dataKey="commission" 
-                  stroke="#8884d8" 
-                  strokeWidth={3}
+                  stroke={PRIMARY_COLOR}
+                  strokeWidth={4}
                   name="Commission"
+                  dot={{ 
+                    fill: PRIMARY_COLOR, 
+                    strokeWidth: 3, 
+                    r: 6,
+                    filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))'
+                  }}
+                  activeDot={{ 
+                    r: 10, 
+                    fill: ACCENT_RED,
+                    stroke: '#fff',
+                    strokeWidth: 3,
+                    filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))'
+                  }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -430,11 +766,51 @@ const AdminDashboard = () => {
         </Grid>
 
         <Grid item xs={12} md={4}>
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
-              Répartition des Utilisateurs
-            </Typography>
-            <ResponsiveContainer width="100%" height={300}>
+          <Paper sx={{ 
+            p: 4,
+            borderRadius: 4,
+            background: 'rgba(255, 255, 255, 0.95)',
+            backdropFilter: 'blur(30px)',
+            boxShadow: `0 12px 40px ${VIOLET_BLUE}15, 0 6px 20px rgba(0, 0, 0, 0.05)`,
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            transition: 'all 0.3s ease',
+            position: 'relative',
+            overflow: 'hidden',
+            '&:hover': {
+              boxShadow: `0 16px 50px ${VIOLET_BLUE}20, 0 8px 25px rgba(0, 0, 0, 0.08)`,
+              transform: 'translateY(-2px)',
+            },
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: 4,
+              background: `linear-gradient(90deg, ${VIOLET_BLUE}, ${VIOLET_PURPLE}, ${PRIMARY_COLOR})`,
+            }
+          }}>
+            <Box sx={{ 
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+              mb: 3
+            }}>
+              <Box sx={{
+                width: 12,
+                height: 12,
+                borderRadius: '50%',
+                background: `linear-gradient(135deg, ${VIOLET_BLUE}, ${VIOLET_PURPLE})`
+              }} />
+              <Typography variant="h6" sx={{ 
+                fontWeight: 600,
+                color: VIOLET_BLUE,
+                fontSize: '1.3rem'
+              }}>
+                Répartition des Utilisateurs
+              </Typography>
+            </Box>
+            <ResponsiveContainer width="100%" height={320}>
               <PieChart>
                 <Pie
                   data={pieData}
@@ -442,15 +818,31 @@ const AdminDashboard = () => {
                   cy="50%"
                   labelLine={false}
                   label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={80}
+                  outerRadius={90}
                   fill="#8884d8"
                   dataKey="value"
+                  stroke="rgba(255, 255, 255, 0.8)"
+                  strokeWidth={2}
                 >
                   {pieData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={[PRIMARY_COLOR, VIOLET_BLUE, ACCENT_RED][index % 3]}
+                      style={{
+                        filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2))',
+                      }}
+                    />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip 
+                  contentStyle={{
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    backdropFilter: 'blur(20px)',
+                    border: `1px solid ${VIOLET_BLUE}30`,
+                    borderRadius: 12,
+                    boxShadow: `0 8px 32px ${VIOLET_BLUE}20`
+                  }}
+                />
               </PieChart>
             </ResponsiveContainer>
           </Paper>
@@ -458,9 +850,66 @@ const AdminDashboard = () => {
       </Grid>
 
       {/* Onglets de gestion */}
-      <Paper sx={{ width: '100%' }}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs value={tabValue} onChange={handleTabChange}>
+      <Paper sx={{ 
+        width: '100%',
+        borderRadius: 4,
+        background: 'rgba(255, 255, 255, 0.95)',
+        backdropFilter: 'blur(30px)',
+        boxShadow: `0 12px 40px ${PRIMARY_COLOR}10, 0 6px 20px rgba(0, 0, 0, 0.05)`,
+        border: '1px solid rgba(255, 255, 255, 0.3)',
+        overflow: 'hidden',
+        position: 'relative',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 1,
+          background: `linear-gradient(90deg, ${PRIMARY_COLOR}, ${VIOLET_BLUE}, ${ACCENT_RED})`,
+        }
+      }}>
+        <Box sx={{ 
+          borderBottom: 1, 
+          borderColor: 'divider',
+          background: `linear-gradient(135deg, ${PRIMARY_COLOR}05, ${VIOLET_BLUE}03)`,
+          position: 'relative'
+        }}>
+          <Tabs 
+            value={tabValue} 
+            onChange={handleTabChange}
+            sx={{
+              '& .MuiTab-root': {
+                fontWeight: 600,
+                fontSize: '1rem',
+                textTransform: 'none',
+                color: PRIMARY_COLOR,
+                minHeight: 64,
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                '&.Mui-selected': {
+                  color: PRIMARY_COLOR,
+                  background: `linear-gradient(135deg, ${PRIMARY_COLOR}12, ${VIOLET_BLUE}08)`,
+                  '&::after': {
+                    content: '""',
+                    position: 'absolute',
+                    bottom: 0,
+                    left: '20%',
+                    right: '20%',
+                    height: 3,
+                    background: `linear-gradient(90deg, ${PRIMARY_COLOR}, ${VIOLET_BLUE})`,
+                    borderRadius: '3px 3px 0 0',
+                  }
+                },
+                '&:hover': {
+                  background: `linear-gradient(135deg, ${PRIMARY_COLOR}08, ${VIOLET_BLUE}05)`,
+                }
+              },
+              '& .MuiTabs-indicator': {
+                display: 'none'
+              }
+            }}
+          >
             <Tab label="Utilisateurs" />
             <Tab label="Réservations" />
           </Tabs>
@@ -468,56 +917,183 @@ const AdminDashboard = () => {
 
         {/* Onglet Utilisateurs */}
         <TabPanel value={tabValue} index={0}>
-          <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-            <Typography variant="h6">Gestion des Utilisateurs</Typography>
+          <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+            <Typography variant="h6" sx={{ 
+              fontWeight: 600,
+              color: PRIMARY_COLOR
+            }}>
+              Gestion des Utilisateurs
+            </Typography>
             <Button
               variant="contained"
               startIcon={<AddIcon />}
               onClick={() => setOpenUserDialog(true)}
+              sx={{
+                background: `linear-gradient(135deg, ${PRIMARY_COLOR}, ${SECONDARY_COLOR})`,
+                borderRadius: 3,
+                px: 3,
+                py: 1.5,
+                fontWeight: 600,
+                textTransform: 'none',
+                boxShadow: `0 4px 15px ${PRIMARY_COLOR}30`,
+                '&:hover': {
+                  background: `linear-gradient(135deg, ${SECONDARY_COLOR}, ${VIOLET_BLUE})`,
+                  transform: 'translateY(-2px)',
+                  boxShadow: `0 6px 20px ${PRIMARY_COLOR}40`,
+                }
+              }}
             >
               Ajouter Utilisateur
             </Button>
           </Box>
 
-          <TableContainer>
+          <TableContainer sx={{
+            borderRadius: 3,
+            background: 'rgba(255, 255, 255, 0.8)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.4)',
+            boxShadow: `0 8px 32px ${PRIMARY_COLOR}08, 0 4px 16px rgba(0, 0, 0, 0.02)`,
+            overflow: 'hidden'
+          }}>
             <Table>
               <TableHead>
-                <TableRow>
-                  <TableCell>Nom</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Rôle</TableCell>
-                  <TableCell>Date création</TableCell>
-                  <TableCell>Actions</TableCell>
+                <TableRow sx={{
+                  background: `linear-gradient(135deg, ${PRIMARY_COLOR}12, ${VIOLET_BLUE}08)`,
+                  '& .MuiTableCell-head': {
+                    borderBottom: `2px solid ${PRIMARY_COLOR}20`,
+                    position: 'relative',
+                    '&::after': {
+                      content: '""',
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: 1,
+                      background: `linear-gradient(90deg, transparent, ${PRIMARY_COLOR}30, transparent)`,
+                    }
+                  }
+                }}>
+                  <TableCell sx={{ 
+                    fontWeight: 700, 
+                    color: PRIMARY_COLOR,
+                    fontSize: '0.95rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>Nom</TableCell>
+                  <TableCell sx={{ 
+                    fontWeight: 700, 
+                    color: PRIMARY_COLOR,
+                    fontSize: '0.95rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>Email</TableCell>
+                  <TableCell sx={{ 
+                    fontWeight: 700, 
+                    color: PRIMARY_COLOR,
+                    fontSize: '0.95rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>Rôle</TableCell>
+                  <TableCell sx={{ 
+                    fontWeight: 700, 
+                    color: PRIMARY_COLOR,
+                    fontSize: '0.95rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>Date création</TableCell>
+                  <TableCell sx={{ 
+                    fontWeight: 700, 
+                    color: PRIMARY_COLOR,
+                    fontSize: '0.95rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {users.map((userItem) => (
-                  <TableRow key={userItem.id}>
+                {users.map((userItem, index) => (
+                  <TableRow 
+                    key={userItem.id}
+                    sx={{
+                      '&:hover': {
+                        background: `linear-gradient(135deg, ${PRIMARY_COLOR}06, ${VIOLET_BLUE}04)`,
+                        transform: 'scale(1.005)',
+                        boxShadow: `0 4px 20px ${PRIMARY_COLOR}15`,
+                      },
+                      transition: 'all 0.3s ease',
+                      borderBottom: `1px solid ${PRIMARY_COLOR}10`,
+                      '&:nth-of-type(even)': {
+                        background: `${PRIMARY_COLOR}02`,
+                      }
+                    }}
+                  >
                     <TableCell>
                       <Box display="flex" alignItems="center">
-                        <Avatar sx={{ mr: 2 }}>{userItem.name.charAt(0)}</Avatar>
-                        {userItem.name}
+                        <Avatar sx={{ 
+                          mr: 2,
+                          background: `linear-gradient(135deg, ${PRIMARY_COLOR}, ${VIOLET_BLUE})`,
+                          fontWeight: 600,
+                          width: 40,
+                          height: 40,
+                          boxShadow: `0 4px 12px ${PRIMARY_COLOR}30`,
+                          border: '2px solid rgba(255, 255, 255, 0.8)'
+                        }}>
+                          {userItem.name.charAt(0)}
+                        </Avatar>
+                        <Typography fontWeight={600} sx={{ color: 'text.primary' }}>
+                          {userItem.name}
+                        </Typography>
                       </Box>
                     </TableCell>
-                    <TableCell>{userItem.email}</TableCell>
+                    <TableCell>
+                      <Typography sx={{ 
+                        color: 'text.secondary',
+                        fontWeight: 500 
+                      }}>
+                        {userItem.email}
+                      </Typography>
+                    </TableCell>
                     <TableCell>
                       <Chip 
                         label={userItem.role} 
                         color={getRoleColor(userItem.role)} 
-                        size="small" 
+                        size="small"
+                        sx={{ 
+                          fontWeight: 600,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px',
+                          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+                        }}
                       />
                     </TableCell>
                     <TableCell>
-                      {new Date(userItem.created_at).toLocaleDateString('fr-FR')}
+                      <Typography sx={{ 
+                        color: 'text.secondary',
+                        fontWeight: 500 
+                      }}>
+                        {new Date(userItem.created_at).toLocaleDateString('fr-FR')}
+                      </Typography>
                     </TableCell>
                     <TableCell>
-                      <IconButton 
-                        color="primary" 
-                        onClick={() => handleEditUser(userItem)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                   
+                      <Tooltip title="Modifier utilisateur" arrow>
+                        <IconButton 
+                          color="primary" 
+                          onClick={() => handleEditUser(userItem)}
+                          sx={{
+                            color: PRIMARY_COLOR,
+                            borderRadius: 2,
+                            background: `${PRIMARY_COLOR}08`,
+                            border: `1px solid ${PRIMARY_COLOR}20`,
+                            '&:hover': {
+                              background: `${PRIMARY_COLOR}15`,
+                              transform: 'scale(1.1) rotate(5deg)',
+                              boxShadow: `0 4px 12px ${PRIMARY_COLOR}30`,
+                            }
+                          }}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -528,32 +1104,148 @@ const AdminDashboard = () => {
 
         {/* Onglet Réservations */}
         <TabPanel value={tabValue} index={1}>
-          <Typography variant="h6" gutterBottom>Toutes les Réservations</Typography>
-          <TableContainer>
+          <Typography variant="h6" gutterBottom sx={{ 
+            fontWeight: 600,
+            color: PRIMARY_COLOR,
+            mb: 3
+          }}>
+            Toutes les Réservations
+          </Typography>
+          <TableContainer sx={{
+            borderRadius: 3,
+            background: 'rgba(255, 255, 255, 0.8)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.4)',
+            boxShadow: `0 8px 32px ${VIOLET_BLUE}08, 0 4px 16px rgba(0, 0, 0, 0.02)`,
+            overflow: 'hidden'
+          }}>
             <Table>
               <TableHead>
-                <TableRow>
-                  <TableCell>Client</TableCell>
-                  <TableCell>Service</TableCell>
-                  <TableCell>Date</TableCell>
-                  <TableCell>Montant</TableCell>
-                  <TableCell>Commission (20%)</TableCell>
-                  <TableCell>Statut</TableCell>
+                <TableRow sx={{
+                  background: `linear-gradient(135deg, ${VIOLET_BLUE}12, ${VIOLET_PURPLE}08)`,
+                  '& .MuiTableCell-head': {
+                    borderBottom: `2px solid ${VIOLET_BLUE}20`,
+                    position: 'relative',
+                    '&::after': {
+                      content: '""',
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: 1,
+                      background: `linear-gradient(90deg, transparent, ${VIOLET_BLUE}30, transparent)`,
+                    }
+                  }
+                }}>
+                  <TableCell sx={{ 
+                    fontWeight: 700, 
+                    color: VIOLET_BLUE,
+                    fontSize: '0.95rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>Client</TableCell>
+                  <TableCell sx={{ 
+                    fontWeight: 700, 
+                    color: VIOLET_BLUE,
+                    fontSize: '0.95rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>Service</TableCell>
+                  <TableCell sx={{ 
+                    fontWeight: 700, 
+                    color: VIOLET_BLUE,
+                    fontSize: '0.95rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>Date</TableCell>
+                  <TableCell sx={{ 
+                    fontWeight: 700, 
+                    color: VIOLET_BLUE,
+                    fontSize: '0.95rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>Montant</TableCell>
+                  <TableCell sx={{ 
+                    fontWeight: 700, 
+                    color: VIOLET_BLUE,
+                    fontSize: '0.95rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>Commission (20%)</TableCell>
+                  <TableCell sx={{ 
+                    fontWeight: 700, 
+                    color: VIOLET_BLUE,
+                    fontSize: '0.95rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>Statut</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {reservations.map((reservation) => (
-                  <TableRow key={reservation.id}>
+                {reservations.map((reservation, index) => (
+                  <TableRow 
+                    key={reservation.id}
+                    sx={{
+                      '&:hover': {
+                        background: `linear-gradient(135deg, ${VIOLET_BLUE}06, ${VIOLET_PURPLE}04)`,
+                        transform: 'scale(1.005)',
+                        boxShadow: `0 4px 20px ${VIOLET_BLUE}15`,
+                      },
+                      transition: 'all 0.3s ease',
+                      borderBottom: `1px solid ${VIOLET_BLUE}10`,
+                      '&:nth-of-type(even)': {
+                        background: `${VIOLET_BLUE}02`,
+                      }
+                    }}
+                  >
                     <TableCell>
-                      {reservation.user?.name || reservation.guest_name || 'N/A'}
+                      <Typography fontWeight={600} sx={{ color: 'text.primary' }}>
+                        {reservation.user?.name || reservation.guest_name || 'N/A'}
+                      </Typography>
                     </TableCell>
-                    <TableCell>{reservation.service?.title || 'N/A'}</TableCell>
                     <TableCell>
-                      {new Date(reservation.reservation_date).toLocaleDateString('fr-FR')}
+                      <Typography sx={{ 
+                        color: 'text.secondary',
+                        fontWeight: 500 
+                      }}>
+                        {reservation.service?.title || 'N/A'}
+                      </Typography>
                     </TableCell>
-                    <TableCell>{formatPrice(reservation.total_price)}</TableCell>
                     <TableCell>
-                      <Typography color="success.main" fontWeight="bold">
+                      <Typography sx={{ 
+                        color: 'text.secondary',
+                        fontWeight: 500 
+                      }}>
+                        {new Date(reservation.reservation_date).toLocaleDateString('fr-FR')}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography fontWeight={700} sx={{
+                        color: PRIMARY_COLOR,
+                        background: `${PRIMARY_COLOR}10`,
+                        px: 2,
+                        py: 0.5,
+                        borderRadius: 2,
+                        display: 'inline-block',
+                        border: `1px solid ${PRIMARY_COLOR}20`
+                      }}>
+                        {formatPrice(reservation.total_price)}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography 
+                        sx={{ 
+                          color: '#fff', 
+                          fontWeight: 700,
+                          background: `linear-gradient(135deg, ${ACCENT_RED}, #ff7875)`,
+                          px: 2,
+                          py: 0.5,
+                          borderRadius: 2,
+                          display: 'inline-block',
+                          boxShadow: `0 2px 8px ${ACCENT_RED}30`,
+                          border: '1px solid rgba(255, 255, 255, 0.2)'
+                        }}
+                      >
                         {formatPrice(reservation.total_price * 0.2)}
                       </Typography>
                     </TableCell>
@@ -565,6 +1257,12 @@ const AdminDashboard = () => {
                           reservation.status === 'pending' ? 'warning' : 'error'
                         }
                         size="small"
+                        sx={{ 
+                          fontWeight: 600,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px',
+                          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+                        }}
                       />
                     </TableCell>
                   </TableRow>
@@ -576,18 +1274,47 @@ const AdminDashboard = () => {
       </Paper>
 
       {/* Dialog Créer/Modifier Utilisateur */}
-      <Dialog open={openUserDialog} onClose={() => setOpenUserDialog(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>
+      <Dialog 
+        open={openUserDialog} 
+        onClose={() => setOpenUserDialog(false)} 
+        maxWidth="sm" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 4,
+            background: 'rgba(255, 255, 255, 0.95)',
+            backdropFilter: 'blur(20px)',
+            boxShadow: `0 16px 48px ${PRIMARY_COLOR}20, 0 8px 24px rgba(0, 0, 0, 0.1)`,
+            border: '1px solid rgba(255, 255, 255, 0.2)'
+          }
+        }}
+      >
+        <DialogTitle sx={{
+          background: `linear-gradient(135deg, ${PRIMARY_COLOR}15, ${VIOLET_BLUE}10)`,
+          color: PRIMARY_COLOR,
+          fontWeight: 600,
+          fontSize: '1.3rem'
+        }}>
           {editingUser ? 'Modifier Utilisateur' : 'Créer Utilisateur'}
         </DialogTitle>
-        <DialogContent>
-          <Grid container spacing={2} sx={{ mt: 1 }}>
+        <DialogContent sx={{ pt: 3 }}>
+          <Grid container spacing={3} sx={{ mt: 1 }}>
             <Grid item xs={12}>
               <TextField
                 fullWidth
                 label="Nom"
                 value={newUser.name}
                 onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '&.Mui-focused fieldset': {
+                      borderColor: PRIMARY_COLOR,
+                    }
+                  },
+                  '& .MuiInputLabel-root.Mui-focused': {
+                    color: PRIMARY_COLOR,
+                  }
+                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -597,6 +1324,16 @@ const AdminDashboard = () => {
                 type="email"
                 value={newUser.email}
                 onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '&.Mui-focused fieldset': {
+                      borderColor: PRIMARY_COLOR,
+                    }
+                  },
+                  '& .MuiInputLabel-root.Mui-focused': {
+                    color: PRIMARY_COLOR,
+                  }
+                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -606,6 +1343,16 @@ const AdminDashboard = () => {
                 label="Rôle"
                 value={newUser.role}
                 onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '&.Mui-focused fieldset': {
+                      borderColor: PRIMARY_COLOR,
+                    }
+                  },
+                  '& .MuiInputLabel-root.Mui-focused': {
+                    color: PRIMARY_COLOR,
+                  }
+                }}
               >
                 <MenuItem value="client">Client</MenuItem>
                 <MenuItem value="agency">Agence</MenuItem>
@@ -620,13 +1367,52 @@ const AdminDashboard = () => {
                 value={newUser.password}
                 onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
                 helperText={editingUser ? "Laissez vide pour ne pas changer" : ""}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '&.Mui-focused fieldset': {
+                      borderColor: PRIMARY_COLOR,
+                    }
+                  },
+                  '& .MuiInputLabel-root.Mui-focused': {
+                    color: PRIMARY_COLOR,
+                  }
+                }}
               />
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenUserDialog(false)}>Annuler</Button>
-          <Button onClick={handleCreateUser} variant="contained">
+        <DialogActions sx={{ p: 3, gap: 2 }}>
+          <Button 
+            onClick={() => setOpenUserDialog(false)}
+            sx={{ 
+              color: 'text.secondary',
+              borderRadius: 2,
+              px: 3,
+              '&:hover': {
+                background: 'rgba(0, 0, 0, 0.04)'
+              }
+            }}
+          >
+            Annuler
+          </Button>
+          <Button 
+            onClick={handleCreateUser} 
+            variant="contained"
+            sx={{
+              background: `linear-gradient(135deg, ${PRIMARY_COLOR}, ${SECONDARY_COLOR})`,
+              borderRadius: 2,
+              px: 4,
+              py: 1,
+              fontWeight: 600,
+              textTransform: 'none',
+              boxShadow: `0 4px 15px ${PRIMARY_COLOR}30`,
+              '&:hover': {
+                background: `linear-gradient(135deg, ${SECONDARY_COLOR}, ${VIOLET_BLUE})`,
+                transform: 'translateY(-1px)',
+                boxShadow: `0 6px 20px ${PRIMARY_COLOR}40`,
+              }
+            }}
+          >
             {editingUser ? 'Modifier' : 'Créer'}
           </Button>
         </DialogActions>

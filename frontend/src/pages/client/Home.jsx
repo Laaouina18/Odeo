@@ -152,7 +152,7 @@ styleSheet.textContent = `
 `;
 document.head.appendChild(styleSheet);
 
-const ITEMS_PER_PAGE = 12;
+const ITEMS_PER_PAGE = 6;
 const PRIMARY_COLOR = '#1e3c72';
 const SECONDARY_COLOR = '#2a5298';
 const VIOLET_BLUE = '#667eea';
