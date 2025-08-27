@@ -53,6 +53,13 @@ const DirectBooking = () => {
   const [reservation, setReservation] = useState(null);
   const [error, setError] = useState('');
 
+  // Palette de couleurs professionnelle
+  const PRIMARY_COLOR = '#1e3c72';
+  const SECONDARY_COLOR = '#2a5298';
+  const VIOLET_BLUE = '#667eea';
+  const VIOLET_PURPLE = '#764ba2';
+  const ACCENT_RED = '#ff4d4f';
+
   const steps = ['Informations', 'Confirmation', 'Facture PDF'];
 
   // Récupérer l'utilisateur connecté et pré-remplir le formulaire
@@ -274,16 +281,98 @@ const DirectBooking = () => {
 
   if (loadingService) {
     return (
-      <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', p: 3, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <CircularProgress size={60} />
+      <Box sx={{ 
+        bgcolor: 'transparent',
+        background: `linear-gradient(135deg, 
+          rgba(255, 255, 255, 0.9) 0%, 
+          rgba(248, 250, 252, 0.95) 25%,
+          rgba(241, 245, 249, 0.9) 50%,
+          rgba(226, 232, 240, 0.95) 100%
+        )`,
+        backdropFilter: 'blur(20px)',
+        minHeight: '100vh', 
+        p: 3, 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        position: 'relative',
+        '&::before': {
+          content: '""',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: `linear-gradient(45deg, ${PRIMARY_COLOR}08, ${VIOLET_BLUE}05, ${ACCENT_RED}03)`,
+          zIndex: -1,
+        }
+      }}>
+        <Box sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          p: 4,
+          background: 'rgba(255, 255, 255, 0.9)',
+          backdropFilter: 'blur(30px)',
+          borderRadius: 4,
+          border: '1px solid rgba(255, 255, 255, 0.3)',
+          boxShadow: `0 16px 48px ${PRIMARY_COLOR}15, 0 8px 24px rgba(0, 0, 0, 0.1)`
+        }}>
+          <CircularProgress 
+            size={60} 
+            sx={{ 
+              color: PRIMARY_COLOR,
+              mb: 2
+            }} 
+          />
+          <Typography variant="h6" sx={{ 
+            color: PRIMARY_COLOR,
+            fontWeight: 600 
+          }}>
+            Chargement du service...
+          </Typography>
+        </Box>
       </Box>
     );
   }
 
   if (error && !service) {
     return (
-      <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', p: 3 }}>
-        <Alert severity="error" sx={{ maxWidth: 'md', mx: 'auto' }}>
+      <Box sx={{ 
+        bgcolor: 'transparent',
+        background: `linear-gradient(135deg, 
+          rgba(255, 255, 255, 0.9) 0%, 
+          rgba(248, 250, 252, 0.95) 25%,
+          rgba(241, 245, 249, 0.9) 50%,
+          rgba(226, 232, 240, 0.95) 100%
+        )`,
+        backdropFilter: 'blur(20px)',
+        minHeight: '100vh', 
+        p: 3,
+        position: 'relative',
+        '&::before': {
+          content: '""',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: `linear-gradient(45deg, ${PRIMARY_COLOR}08, ${VIOLET_BLUE}05, ${ACCENT_RED}03)`,
+          zIndex: -1,
+        }
+      }}>
+        <Alert 
+          severity="error" 
+          sx={{ 
+            maxWidth: 'md', 
+            mx: 'auto',
+            background: 'rgba(255, 255, 255, 0.95)',
+            backdropFilter: 'blur(20px)',
+            border: `1px solid ${ACCENT_RED}30`,
+            borderRadius: 3,
+            boxShadow: `0 8px 32px ${ACCENT_RED}20`
+          }}
+        >
           {error}
         </Alert>
       </Box>
@@ -292,85 +381,312 @@ const DirectBooking = () => {
 
   if (bookingConfirmed && activeStep === 2) {
     return (
-      <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', p: 3 }}>
-        <Box maxWidth="md" mx="auto" textAlign="center">
-          <Check sx={{ fontSize: 80, color: 'success.main', mb: 2 }} />
-          <Typography variant="h3" fontWeight={800} color="success.main" mb={2}>
+      <Box sx={{ 
+        bgcolor: 'transparent',
+        background: `linear-gradient(135deg, 
+          rgba(255, 255, 255, 0.9) 0%, 
+          rgba(248, 250, 252, 0.95) 25%,
+          rgba(241, 245, 249, 0.9) 50%,
+          rgba(226, 232, 240, 0.95) 100%
+        )`,
+        backdropFilter: 'blur(20px)',
+        minHeight: '100vh', 
+        p: 3,
+        position: 'relative',
+        '&::before': {
+          content: '""',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: `linear-gradient(45deg, ${PRIMARY_COLOR}08, ${VIOLET_BLUE}05, ${ACCENT_RED}03)`,
+          zIndex: -1,
+        }
+      }}>
+        <Box 
+          maxWidth="md" 
+          mx="auto" 
+          textAlign="center"
+          sx={{
+            p: 4,
+            background: 'rgba(255, 255, 255, 0.95)',
+            backdropFilter: 'blur(30px)',
+            borderRadius: 4,
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            boxShadow: `0 16px 48px ${PRIMARY_COLOR}15, 0 8px 24px rgba(0, 0, 0, 0.1)`
+          }}
+        >
+          <Box sx={{
+            width: 120,
+            height: 120,
+            borderRadius: '50%',
+            background: `linear-gradient(135deg, #4caf50, #66bb6a)`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            mx: 'auto',
+            mb: 3,
+            boxShadow: '0 8px 32px rgba(76, 175, 80, 0.3)',
+            animation: 'pulse 2s infinite'
+          }}>
+            <Check sx={{ fontSize: 60, color: 'white' }} />
+          </Box>
+          
+          <Typography variant="h3" fontWeight={800} sx={{
+            background: `linear-gradient(135deg, #4caf50, #66bb6a)`,
+            backgroundClip: 'text',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            mb: 2
+          }}>
             Réservation Confirmée !
           </Typography>
-          <Typography variant="h6" color="text.secondary" mb={3}>
+          
+          <Typography variant="h6" color="text.secondary" mb={3} sx={{ fontWeight: 500 }}>
             Votre facture PDF a été générée et téléchargée automatiquement.
           </Typography>
           
-          <Alert severity="success" sx={{ mb: 3 }}>
+          <Alert 
+            severity="success" 
+            sx={{ 
+              mb: 3,
+              background: 'rgba(76, 175, 80, 0.1)',
+              border: '1px solid rgba(76, 175, 80, 0.3)',
+              borderRadius: 3
+            }}
+          >
             📄 Facture PDF téléchargée : facture-reservation-{reservation?.id}.pdf
           </Alert>
           
-          <Box sx={{ mb: 3 }}>
-            <Chip label={`Réservation N° ${reservation?.id}`} color="primary" size="large" />
+          <Box sx={{ mb: 4 }}>
+            <Chip 
+              label={`Réservation N° ${reservation?.id}`} 
+              sx={{
+                background: `linear-gradient(135deg, ${PRIMARY_COLOR}, ${SECONDARY_COLOR})`,
+                color: 'white',
+                fontWeight: 600,
+                fontSize: '1rem',
+                py: 3,
+                px: 2,
+                boxShadow: `0 4px 16px ${PRIMARY_COLOR}30`
+              }}
+              size="large" 
+            />
           </Box>
           
-          <Button
-            variant="contained"
-            size="large"
-            onClick={() => navigate('/')}
-            sx={{ mr: 2 }}
-          >
-            Retour à l'accueil
-          </Button>
-          
-          <Button
-            variant="outlined"
-            size="large"
-            onClick={() => generatePDF(reservation)}
-            startIcon={<Download />}
-          >
-            Télécharger PDF à nouveau
-          </Button>
+          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Button
+              variant="contained"
+              size="large"
+              onClick={() => navigate('/')}
+              sx={{
+                background: `linear-gradient(135deg, ${PRIMARY_COLOR}, ${SECONDARY_COLOR})`,
+                borderRadius: 3,
+                px: 4,
+                py: 1.5,
+                fontWeight: 600,
+                textTransform: 'none',
+                boxShadow: `0 6px 20px ${PRIMARY_COLOR}30`,
+                '&:hover': {
+                  background: `linear-gradient(135deg, ${SECONDARY_COLOR}, ${VIOLET_BLUE})`,
+                  transform: 'translateY(-2px)',
+                  boxShadow: `0 8px 25px ${PRIMARY_COLOR}40`,
+                }
+              }}
+            >
+              Retour à l'accueil
+            </Button>
+            
+            <Button
+              variant="outlined"
+              size="large"
+              onClick={() => generatePDF(reservation)}
+              startIcon={<Download />}
+              sx={{
+                borderColor: VIOLET_BLUE,
+                color: VIOLET_BLUE,
+                borderRadius: 3,
+                px: 4,
+                py: 1.5,
+                fontWeight: 600,
+                textTransform: 'none',
+                borderWidth: 2,
+                '&:hover': {
+                  borderColor: VIOLET_PURPLE,
+                  background: `${VIOLET_BLUE}10`,
+                  transform: 'translateY(-2px)',
+                }
+              }}
+            >
+              Télécharger PDF à nouveau
+            </Button>
+          </Box>
         </Box>
       </Box>
     );
   }
 
   return (
-    <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', p: 3 }}>
+    <Box sx={{ 
+      bgcolor: 'transparent',
+      background: `linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.9) 0%, 
+        rgba(248, 250, 252, 0.95) 25%,
+        rgba(241, 245, 249, 0.9) 50%,
+        rgba(226, 232, 240, 0.95) 100%
+      )`,
+      backdropFilter: 'blur(20px)',
+      minHeight: '100vh', 
+      p: 3,
+      position: 'relative',
+      '&::before': {
+        content: '""',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: `linear-gradient(45deg, ${PRIMARY_COLOR}08, ${VIOLET_BLUE}05, ${ACCENT_RED}03)`,
+        zIndex: -1,
+      }
+    }}>
       <Box maxWidth="md" mx="auto">
         {/* Stepper */}
-        <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
+        <Stepper 
+          activeStep={activeStep} 
+          sx={{ 
+            mb: 4,
+            background: 'rgba(255, 255, 255, 0.8)',
+            backdropFilter: 'blur(20px)',
+            borderRadius: 3,
+            p: 3,
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            boxShadow: `0 8px 32px ${PRIMARY_COLOR}10`,
+            '& .MuiStepLabel-root .Mui-completed': {
+              color: PRIMARY_COLOR,
+            },
+            '& .MuiStepLabel-root .Mui-active': {
+              color: VIOLET_BLUE,
+            },
+            '& .MuiStepConnector-alternativeLabel': {
+              top: 10,
+              left: 'calc(-50% + 16px)',
+              right: 'calc(50% + 16px)',
+            },
+            '& .MuiStepConnector-alternativeLabel.Mui-active .MuiStepConnector-line': {
+              background: `linear-gradient(90deg, ${PRIMARY_COLOR}, ${VIOLET_BLUE})`,
+            },
+            '& .MuiStepConnector-alternativeLabel.Mui-completed .MuiStepConnector-line': {
+              background: PRIMARY_COLOR,
+            }
+          }}
+        >
           {steps.map((label) => (
             <Step key={label}>
-              <StepLabel>{label}</StepLabel>
+              <StepLabel sx={{
+                '& .MuiStepLabel-label': {
+                  fontWeight: 600,
+                  color: 'text.primary'
+                }
+              }}>{label}</StepLabel>
             </Step>
           ))}
         </Stepper>
 
-        <Card sx={{ borderRadius: 3, boxShadow: 3 }}>
+        <Card sx={{ 
+          borderRadius: 4,
+          background: 'rgba(255, 255, 255, 0.95)',
+          backdropFilter: 'blur(30px)',
+          border: '1px solid rgba(255, 255, 255, 0.3)',
+          boxShadow: `0 16px 48px ${PRIMARY_COLOR}15, 0 8px 24px rgba(0, 0, 0, 0.1)`,
+          overflow: 'hidden',
+          position: 'relative',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 4,
+            background: `linear-gradient(90deg, ${PRIMARY_COLOR}, ${VIOLET_BLUE}, ${ACCENT_RED})`,
+          }
+        }}>
           <CardContent sx={{ p: 4 }}>
             {activeStep === 0 && (
               <>
-                <Typography variant="h4" fontWeight={700} mb={3} textAlign="center">
-                  🏜️ {service?.title || 'Réservation Service'}
-                </Typography>
+                <Box sx={{ textAlign: 'center', mb: 4 }}>
+                  <Typography variant="h4" fontWeight={700} sx={{
+                    background: `linear-gradient(135deg, ${PRIMARY_COLOR}, ${VIOLET_BLUE})`,
+                    backgroundClip: 'text',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    mb: 2
+                  }}>
+                    🏜️ {service?.title || 'Réservation Service'}
+                  </Typography>
+                  <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 500 }}>
+                    Remplissez vos informations pour confirmer votre réservation
+                  </Typography>
+                </Box>
                 
                 {currentUser && (
-                  <Alert severity="info" sx={{ mb: 3 }}>
+                  <Alert 
+                    severity="info" 
+                    sx={{ 
+                      mb: 3,
+                      background: `${PRIMARY_COLOR}08`,
+                      border: `1px solid ${PRIMARY_COLOR}20`,
+                      borderRadius: 3,
+                      '& .MuiAlert-icon': {
+                        color: PRIMARY_COLOR
+                      }
+                    }}
+                  >
                     ✅ Vous êtes connecté en tant que <strong>{currentUser.name}</strong>. Vos informations seront liées à votre compte.
                   </Alert>
                 )}
                 
                 {error && (
-                  <Alert severity="error" sx={{ mb: 3 }}>
+                  <Alert 
+                    severity="error" 
+                    sx={{ 
+                      mb: 3,
+                      background: `${ACCENT_RED}08`,
+                      border: `1px solid ${ACCENT_RED}20`,
+                      borderRadius: 3,
+                      '& .MuiAlert-icon': {
+                        color: ACCENT_RED
+                      }
+                    }}
+                  >
                     {error}
                   </Alert>
                 )}
                 
                 {!currentUser && (
-                  <Alert severity="warning" sx={{ mb: 3 }}>
+                  <Alert 
+                    severity="warning" 
+                    sx={{ 
+                      mb: 3,
+                      background: 'rgba(255, 152, 0, 0.08)',
+                      border: '1px solid rgba(255, 152, 0, 0.2)',
+                      borderRadius: 3
+                    }}
+                  >
                     💡 Vous pouvez réserver sans compte, mais si vous souhaitez suivre vos réservations, 
                     <Button 
                       variant="text" 
                       onClick={() => navigate('/login')}
-                      sx={{ ml: 1, textTransform: 'none', fontWeight: 600 }}
+                      sx={{ 
+                        ml: 1, 
+                        textTransform: 'none', 
+                        fontWeight: 600,
+                        color: PRIMARY_COLOR,
+                        '&:hover': {
+                          background: `${PRIMARY_COLOR}10`
+                        }
+                      }}
                     >
                       connectez-vous ici
                     </Button>
@@ -386,7 +702,21 @@ const DirectBooking = () => {
                       value={bookingData.name}
                       onChange={(e) => handleInputChange('name', e.target.value)}
                       InputProps={{
-                        startAdornment: <Person sx={{ mr: 1, color: 'text.secondary' }} />
+                        startAdornment: <Person sx={{ mr: 1, color: PRIMARY_COLOR }} />
+                      }}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          background: 'rgba(255, 255, 255, 0.8)',
+                          borderRadius: 2,
+                          '&.Mui-focused fieldset': {
+                            borderColor: PRIMARY_COLOR,
+                            borderWidth: 2
+                          }
+                        },
+                        '& .MuiInputLabel-root.Mui-focused': {
+                          color: PRIMARY_COLOR,
+                          fontWeight: 600
+                        }
                       }}
                     />
                   </Grid>
@@ -399,6 +729,20 @@ const DirectBooking = () => {
                       variant="outlined"
                       value={bookingData.email}
                       onChange={(e) => handleInputChange('email', e.target.value)}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          background: 'rgba(255, 255, 255, 0.8)',
+                          borderRadius: 2,
+                          '&.Mui-focused fieldset': {
+                            borderColor: PRIMARY_COLOR,
+                            borderWidth: 2
+                          }
+                        },
+                        '& .MuiInputLabel-root.Mui-focused': {
+                          color: PRIMARY_COLOR,
+                          fontWeight: 600
+                        }
+                      }}
                     />
                   </Grid>
                   
@@ -409,6 +753,20 @@ const DirectBooking = () => {
                       variant="outlined"
                       value={bookingData.phone}
                       onChange={(e) => handleInputChange('phone', e.target.value)}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          background: 'rgba(255, 255, 255, 0.8)',
+                          borderRadius: 2,
+                          '&.Mui-focused fieldset': {
+                            borderColor: VIOLET_BLUE,
+                            borderWidth: 2
+                          }
+                        },
+                        '& .MuiInputLabel-root.Mui-focused': {
+                          color: VIOLET_BLUE,
+                          fontWeight: 600
+                        }
+                      }}
                     />
                   </Grid>
                   
@@ -421,17 +779,44 @@ const DirectBooking = () => {
                       value={bookingData.people}
                       onChange={(e) => handleInputChange('people', parseInt(e.target.value) || 1)}
                       inputProps={{ min: 1, max: 10 }}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          background: 'rgba(255, 255, 255, 0.8)',
+                          borderRadius: 2,
+                          '&.Mui-focused fieldset': {
+                            borderColor: VIOLET_BLUE,
+                            borderWidth: 2
+                          }
+                        },
+                        '& .MuiInputLabel-root.Mui-focused': {
+                          color: VIOLET_BLUE,
+                          fontWeight: 600
+                        }
+                      }}
                     />
                   </Grid>
                   
                   <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth variant="outlined">
-                      <InputLabel>Date disponible *</InputLabel>
+                      <InputLabel sx={{
+                        '&.Mui-focused': {
+                          color: VIOLET_PURPLE,
+                          fontWeight: 600
+                        }
+                      }}>Date disponible *</InputLabel>
                       <Select
                         value={bookingData.date}
                         onChange={(e) => handleInputChange('date', e.target.value)}
                         label="Date disponible *"
-                        startAdornment={<Event sx={{ mr: 1, color: 'text.secondary' }} />}
+                        startAdornment={<Event sx={{ mr: 1, color: VIOLET_PURPLE }} />}
+                        sx={{
+                          background: 'rgba(255, 255, 255, 0.8)',
+                          borderRadius: 2,
+                          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                            borderColor: VIOLET_PURPLE,
+                            borderWidth: 2
+                          }
+                        }}
                       >
                         {service?.availableDates?.map((date) => (
                           <MenuItem key={date} value={date}>
@@ -455,7 +840,25 @@ const DirectBooking = () => {
                       variant="outlined"
                       value={bookingData.time}
                       onChange={(e) => handleInputChange('time', e.target.value)}
-                      InputLabelProps={{ shrink: true }}
+                      InputLabelProps={{ 
+                        shrink: true,
+                        sx: {
+                          '&.Mui-focused': {
+                            color: VIOLET_PURPLE,
+                            fontWeight: 600
+                          }
+                        }
+                      }}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          background: 'rgba(255, 255, 255, 0.8)',
+                          borderRadius: 2,
+                          '&.Mui-focused fieldset': {
+                            borderColor: VIOLET_PURPLE,
+                            borderWidth: 2
+                          }
+                        }
+                      }}
                     />
                   </Grid>
                   
@@ -468,31 +871,140 @@ const DirectBooking = () => {
                       variant="outlined"
                       value={bookingData.specialRequests}
                       onChange={(e) => handleInputChange('specialRequests', e.target.value)}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          background: 'rgba(255, 255, 255, 0.8)',
+                          borderRadius: 2,
+                          '&.Mui-focused fieldset': {
+                            borderColor: SECONDARY_COLOR,
+                            borderWidth: 2
+                          }
+                        },
+                        '& .MuiInputLabel-root.Mui-focused': {
+                          color: SECONDARY_COLOR,
+                          fontWeight: 600
+                        }
+                      }}
                     />
                   </Grid>
                 </Grid>
                 
-                <Divider sx={{ my: 3 }} />
+                <Divider sx={{ 
+                  my: 4,
+                  '&::before, &::after': {
+                    borderColor: `${PRIMARY_COLOR}20`,
+                  }
+                }} />
                 
-                <Paper sx={{ p: 3, bgcolor: 'primary.light', color: 'primary.contrastText' }}>
-                  <Typography variant="h6" mb={2}>💰 Récapitulatif</Typography>
-                  <Typography variant="body1" mb={1}>
-                    Prix: {service?.price || 120}€ × {bookingData.people} personne(s)
-                  </Typography>
-                  <Typography variant="h5" fontWeight={700}>
-                    Total: {(service?.price || 120) * bookingData.people}€
-                  </Typography>
+                <Paper sx={{ 
+                  p: 4,
+                  background: `linear-gradient(135deg, ${PRIMARY_COLOR}08, ${VIOLET_BLUE}05)`,
+                  border: `2px solid ${PRIMARY_COLOR}20`,
+                  borderRadius: 3,
+                  position: 'relative',
+                  overflow: 'hidden',
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: 4,
+                    background: `linear-gradient(90deg, ${PRIMARY_COLOR}, ${VIOLET_BLUE})`,
+                  }
+                }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                    <Box sx={{
+                      width: 12,
+                      height: 12,
+                      borderRadius: '50%',
+                      background: `linear-gradient(135deg, ${PRIMARY_COLOR}, ${VIOLET_BLUE})`,
+                      mr: 2
+                    }} />
+                    <Typography variant="h6" sx={{ 
+                      fontWeight: 700,
+                      color: PRIMARY_COLOR
+                    }}>
+                      💰 Récapitulatif de la réservation
+                    </Typography>
+                  </Box>
+                  
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                    <Typography variant="body1" sx={{ fontWeight: 500, color: 'text.secondary' }}>
+                      Prix unitaire:
+                    </Typography>
+                    <Typography variant="body1" sx={{ fontWeight: 600, color: PRIMARY_COLOR }}>
+                      {service?.price || 120}€
+                    </Typography>
+                  </Box>
+                  
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                    <Typography variant="body1" sx={{ fontWeight: 500, color: 'text.secondary' }}>
+                      Nombre de personnes:
+                    </Typography>
+                    <Typography variant="body1" sx={{ fontWeight: 600, color: VIOLET_BLUE }}>
+                      {bookingData.people} personne(s)
+                    </Typography>
+                  </Box>
+                  
+                  <Divider sx={{ my: 2, borderColor: `${PRIMARY_COLOR}30` }} />
+                  
+                  <Box sx={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    p: 2,
+                    background: `linear-gradient(135deg, ${PRIMARY_COLOR}15, ${VIOLET_BLUE}10)`,
+                    borderRadius: 2,
+                    border: `1px solid ${PRIMARY_COLOR}30`
+                  }}>
+                    <Typography variant="h6" sx={{ fontWeight: 700, color: PRIMARY_COLOR }}>
+                      Total:
+                    </Typography>
+                    <Typography variant="h5" sx={{ 
+                      fontWeight: 800,
+                      color: PRIMARY_COLOR,
+                      textShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+                    }}>
+                      {(service?.price || 120) * bookingData.people}€
+                    </Typography>
+                  </Box>
                 </Paper>
                 
-                <Box textAlign="center" mt={3}>
+                <Box textAlign="center" mt={4}>
                   <Button
                     variant="contained"
                     size="large"
                     onClick={handleSubmitBooking}
                     disabled={!validateForm() || isSubmitting}
-                    sx={{ px: 4, py: 2, borderRadius: 3, fontWeight: 700 }}
+                    sx={{ 
+                      px: 6, 
+                      py: 2, 
+                      borderRadius: 3, 
+                      fontWeight: 700,
+                      fontSize: '1.1rem',
+                      textTransform: 'none',
+                      background: `linear-gradient(135deg, ${PRIMARY_COLOR}, ${SECONDARY_COLOR})`,
+                      boxShadow: `0 8px 24px ${PRIMARY_COLOR}30`,
+                      '&:hover': {
+                        background: `linear-gradient(135deg, ${SECONDARY_COLOR}, ${VIOLET_BLUE})`,
+                        transform: 'translateY(-2px)',
+                        boxShadow: `0 12px 32px ${PRIMARY_COLOR}40`,
+                      },
+                      '&:disabled': {
+                        background: 'rgba(0, 0, 0, 0.12)',
+                        color: 'rgba(0, 0, 0, 0.26)'
+                      }
+                    }}
                   >
-                    {isSubmitting ? 'Confirmation en cours...' : 'Confirmer la réservation'}
+                    {isSubmitting ? (
+                      <>
+                        <CircularProgress size={20} sx={{ mr: 1, color: 'white' }} />
+                        Confirmation en cours...
+                      </>
+                    ) : (
+                      'Confirmer la réservation'
+                    )}
                   </Button>
                 </Box>
               </>
@@ -500,15 +1012,49 @@ const DirectBooking = () => {
             
             {activeStep === 1 && bookingConfirmed && (
               <Box textAlign="center">
-                <Check sx={{ fontSize: 60, color: 'success.main', mb: 2 }} />
-                <Typography variant="h5" fontWeight={700} color="success.main" mb={2}>
+                <Box sx={{
+                  width: 100,
+                  height: 100,
+                  borderRadius: '50%',
+                  background: `linear-gradient(135deg, #4caf50, #66bb6a)`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  mx: 'auto',
+                  mb: 3,
+                  boxShadow: '0 8px 32px rgba(76, 175, 80, 0.3)',
+                  animation: 'pulse 2s infinite'
+                }}>
+                  <Check sx={{ fontSize: 50, color: 'white' }} />
+                </Box>
+                
+                <Typography variant="h5" fontWeight={700} sx={{
+                  background: `linear-gradient(135deg, #4caf50, #66bb6a)`,
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  mb: 2
+                }}>
                   Réservation confirmée !
                 </Typography>
-                <Typography variant="body1" color="text.secondary" mb={3}>
+                
+                <Typography variant="body1" color="text.secondary" mb={3} sx={{ fontWeight: 500 }}>
                   Génération de votre facture PDF en cours...
                 </Typography>
-                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <div className="spinner"></div>
+                
+                <Box sx={{ 
+                  display: 'flex', 
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: 2
+                }}>
+                  <CircularProgress 
+                    size={40}
+                    sx={{ color: PRIMARY_COLOR }}
+                  />
+                  <Typography variant="body2" color="text.secondary">
+                    Préparation du document...
+                  </Typography>
                 </Box>
               </Box>
             )}
@@ -517,18 +1063,34 @@ const DirectBooking = () => {
       </Box>
       
       <style jsx>{`
-        .spinner {
-          border: 4px solid #f3f3f3;
-          border-top: 4px solid #1976d2;
-          border-radius: 50%;
-          width: 40px;
-          height: 40px;
-          animation: spin 1s linear infinite;
+        @keyframes pulse {
+          0% { 
+            transform: scale(1);
+            box-shadow: 0 8px 32px rgba(76, 175, 80, 0.3);
+          }
+          50% { 
+            transform: scale(1.05);
+            box-shadow: 0 12px 40px rgba(76, 175, 80, 0.5);
+          }
+          100% { 
+            transform: scale(1);
+            box-shadow: 0 8px 32px rgba(76, 175, 80, 0.3);
+          }
         }
         
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        .fade-in-up {
+          animation: fadeInUp 0.6s ease-out;
         }
       `}</style>
     </Box>

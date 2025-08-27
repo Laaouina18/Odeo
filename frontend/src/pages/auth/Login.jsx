@@ -19,6 +19,13 @@ const Login = () => {
   // Redux auth state
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
+  // Palette de couleurs professionnelle
+  const PRIMARY_COLOR = '#1e3c72';
+  const SECONDARY_COLOR = '#2a5298';
+  const VIOLET_BLUE = '#667eea';
+  const VIOLET_PURPLE = '#764ba2';
+  const ACCENT_RED = '#ff4d4f';
+
   React.useEffect(() => {
     if (isAuthenticated && user) {
       if (user.role === 'client') navigate('/client/dashboard');
@@ -75,8 +82,25 @@ const Login = () => {
       alignItems="center" 
       minHeight="100vh" 
       sx={{
-        background: 'linear-gradient(135deg, rgba(129, 39, 85, 0.1) 0%, rgba(129, 39, 85, 0.05) 50%, #ffffff 100%)',
-        padding: 2
+        background: `linear-gradient(135deg, 
+          rgba(255, 255, 255, 0.9) 0%, 
+          rgba(248, 250, 252, 0.95) 25%,
+          rgba(241, 245, 249, 0.9) 50%,
+          rgba(226, 232, 240, 0.95) 100%
+        )`,
+        backdropFilter: 'blur(20px)',
+        padding: 2,
+        position: 'relative',
+        '&::before': {
+          content: '""',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: `linear-gradient(45deg, ${PRIMARY_COLOR}08, ${VIOLET_BLUE}05, ${ACCENT_RED}03)`,
+          zIndex: -1,
+        }
       }}
     >
       <Paper 
@@ -84,30 +108,59 @@ const Login = () => {
         className="glass-card animate-fade-in-up"
         sx={{ 
           p: 5, 
-          minWidth: 400,
-          maxWidth: 450,
+          minWidth: 420,
+          maxWidth: 480,
           borderRadius: 4,
           background: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(129, 39, 85, 0.1)',
-          boxShadow: '0 20px 60px rgba(129, 39, 85, 0.15)'
+          backdropFilter: 'blur(30px)',
+          border: '1px solid rgba(255, 255, 255, 0.3)',
+          boxShadow: `0 20px 60px ${PRIMARY_COLOR}15, 0 10px 30px rgba(0, 0, 0, 0.1)`,
+          position: 'relative',
+          overflow: 'hidden',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 4,
+            background: `linear-gradient(90deg, ${PRIMARY_COLOR}, ${VIOLET_BLUE}, ${ACCENT_RED})`,
+          }
         }}
       >
-        <Box textAlign="center" mb={4}>
+        <Box textAlign="center" mb={4} sx={{ position: 'relative', zIndex: 1 }}>
+          <Box sx={{
+            width: 80,
+            height: 80,
+            borderRadius: '50%',
+            background: `linear-gradient(135deg, ${PRIMARY_COLOR}, ${VIOLET_BLUE})`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            mx: 'auto',
+            mb: 3,
+            boxShadow: `0 8px 32px ${PRIMARY_COLOR}30`,
+            '&::before': {
+              content: '"🔐"',
+              fontSize: '2rem',
+            }
+          }} />
+          
           <Typography 
             variant="h3" 
             fontWeight="bold"
             sx={{
-              background: 'linear-gradient(135deg, rgb(129, 39, 85), rgba(129, 39, 85, 0.7))',
+              background: `linear-gradient(135deg, ${PRIMARY_COLOR}, ${VIOLET_BLUE})`,
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
-              mb: 1
+              mb: 1,
+              fontSize: '2.2rem'
             }}
           >
             Connexion
           </Typography>
-          <Typography variant="body1" color="text.secondary">
+          <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 500 }}>
             Accédez à votre espace personnel
           </Typography>
         </Box>
@@ -124,14 +177,23 @@ const Login = () => {
             onChange={handleChange}
             sx={{
               '& .MuiOutlinedInput-root': {
-                borderRadius: 2,
+                borderRadius: 3,
+                background: 'rgba(255, 255, 255, 0.8)',
+                backdropFilter: 'blur(10px)',
                 '&:hover fieldset': {
-                  borderColor: 'rgba(129, 39, 85, 0.5)',
+                  borderColor: `${PRIMARY_COLOR}60`,
+                  borderWidth: 2
                 },
                 '&.Mui-focused fieldset': {
-                  borderColor: 'rgb(129, 39, 85)',
+                  borderColor: PRIMARY_COLOR,
+                  borderWidth: 2,
+                  boxShadow: `0 0 0 3px ${PRIMARY_COLOR}20`
                 },
               },
+              '& .MuiInputLabel-root.Mui-focused': {
+                color: PRIMARY_COLOR,
+                fontWeight: 600
+              }
             }}
           />
           <TextField 
@@ -145,14 +207,23 @@ const Login = () => {
             onChange={handleChange}
             sx={{
               '& .MuiOutlinedInput-root': {
-                borderRadius: 2,
+                borderRadius: 3,
+                background: 'rgba(255, 255, 255, 0.8)',
+                backdropFilter: 'blur(10px)',
                 '&:hover fieldset': {
-                  borderColor: 'rgba(129, 39, 85, 0.5)',
+                  borderColor: `${VIOLET_BLUE}60`,
+                  borderWidth: 2
                 },
                 '&.Mui-focused fieldset': {
-                  borderColor: 'rgb(129, 39, 85)',
+                  borderColor: VIOLET_BLUE,
+                  borderWidth: 2,
+                  boxShadow: `0 0 0 3px ${VIOLET_BLUE}20`
                 },
               },
+              '& .MuiInputLabel-root.Mui-focused': {
+                color: VIOLET_BLUE,
+                fontWeight: 600
+              }
             }}
           />
           <Button 
@@ -161,21 +232,25 @@ const Login = () => {
             fullWidth 
             disabled={loading}
             sx={{ 
-              mt: 3,
+              mt: 4,
               mb: 2,
-              py: 1.5,
+              py: 1.8,
               fontSize: '1.1rem',
-              fontWeight: 600,
-              borderRadius: 2,
-              background: 'linear-gradient(135deg, rgb(129, 39, 85) 0%, rgba(129, 39, 85, 0.8) 100%)',
-              boxShadow: '0 6px 20px rgba(129, 39, 85, 0.3)',
+              fontWeight: 700,
+              borderRadius: 3,
+              textTransform: 'none',
+              background: `linear-gradient(135deg, ${PRIMARY_COLOR}, ${SECONDARY_COLOR})`,
+              boxShadow: `0 8px 24px ${PRIMARY_COLOR}30`,
+              border: '1px solid rgba(255, 255, 255, 0.2)',
               '&:hover': {
-                background: 'linear-gradient(135deg, rgba(129, 39, 85, 0.9) 0%, rgba(129, 39, 85, 0.7) 100%)',
-                boxShadow: '0 8px 25px rgba(129, 39, 85, 0.4)',
+                background: `linear-gradient(135deg, ${SECONDARY_COLOR}, ${VIOLET_BLUE})`,
+                boxShadow: `0 12px 32px ${PRIMARY_COLOR}40`,
                 transform: 'translateY(-2px)',
               },
               '&:disabled': {
-                background: 'rgba(129, 39, 85, 0.3)',
+                background: 'rgba(0, 0, 0, 0.12)',
+                color: 'rgba(0, 0, 0, 0.26)',
+                boxShadow: 'none'
               }
             }}
           >
@@ -185,16 +260,20 @@ const Login = () => {
         
         {!isAuthenticated && (
           <Box textAlign="center" mt={3}>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
               Pas de compte ?{' '}
               <Typography 
                 component="a" 
                 href="/register" 
                 variant="body2"
                 sx={{
-                  color: 'rgb(129, 39, 85)',
+                  color: VIOLET_BLUE,
                   textDecoration: 'none',
-                  fontWeight: 600,
+                  fontWeight: 700,
+                  background: `linear-gradient(135deg, ${VIOLET_BLUE}, ${VIOLET_PURPLE})`,
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
                   '&:hover': {
                     textDecoration: 'underline',
                   }

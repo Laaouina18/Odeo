@@ -26,8 +26,16 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  IconButton
+  IconButton,
+  Pagination
 } from '@mui/material';
+
+// Professional Fresh Color Palette
+const PRIMARY_COLOR = '#1e3c72';
+const SECONDARY_COLOR = '#2a5298';
+const VIOLET_BLUE = '#667eea';
+const VIOLET_PURPLE = '#764ba2';
+const ACCENT_RED = '#ff4d4f';
 import {
   Person,
   Event,
@@ -50,6 +58,10 @@ const ClientSpace = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const reservationsPerPage = 6;
   
   // Dialog states
   const [editDialog, setEditDialog] = useState(false);
@@ -109,6 +121,16 @@ const ClientSpace = () => {
     }
   };
 
+  // Pagination functions
+  const totalPages = Math.ceil(reservations.length / reservationsPerPage);
+  const startIndex = (currentPage - 1) * reservationsPerPage;
+  const endIndex = startIndex + reservationsPerPage;
+  const currentReservations = reservations.slice(startIndex, endIndex);
+
+  const handlePageChange = (event, page) => {
+    setCurrentPage(page);
+  };
+
   const handleEdit = (reservation) => {
     if (!canModifyOrCancel(reservation.reservation_date)) {
       setError('Modification impossible : moins de 3 jours avant la réservation');
@@ -143,6 +165,7 @@ const ClientSpace = () => {
       setSuccess('Réservation annulée avec succès');
       setCancelDialog(false);
       setSelectedReservation(null);
+      setCurrentPage(1); // Reset pagination
       loadUserReservations(user.id);
     } catch (error) {
       setError(error.message);
@@ -155,6 +178,7 @@ const ClientSpace = () => {
       setSuccess('Réservation modifiée avec succès');
       setEditDialog(false);
       setSelectedReservation(null);
+      setCurrentPage(1); // Reset pagination
       loadUserReservations(user.id);
     } catch (error) {
       setError(error.message);
@@ -273,19 +297,57 @@ const ClientSpace = () => {
   }
 
   return (
-    <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', p: 3 }}>
+    <Box 
+      sx={{ 
+        background: `linear-gradient(135deg, ${PRIMARY_COLOR} 0%, ${SECONDARY_COLOR} 25%, ${VIOLET_BLUE} 50%, ${VIOLET_PURPLE} 75%, ${PRIMARY_COLOR} 100%)`,
+        backgroundSize: '400% 400%',
+        animation: 'gradientAnimation 15s ease infinite',
+        '@keyframes gradientAnimation': {
+          '0%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+          '100%': { backgroundPosition: '0% 50%' }
+        },
+        minHeight: '100vh', 
+        p: 3 
+      }}
+    >
       <Box maxWidth="lg" mx="auto">
         {/* En-tête */}
-        <Paper sx={{ p: 4, mb: 4, borderRadius: 3, background: 'linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)' }}>
+        <Paper 
+          sx={{ 
+            p: 4, 
+            mb: 4, 
+            borderRadius: 4, 
+            background: 'rgba(255, 255, 255, 0.15)',
+            backdropFilter: 'blur(30px)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            boxShadow: '0 25px 45px rgba(0, 0, 0, 0.1)'
+          }}
+        >
           <Box display="flex" alignItems="center" justifyContent="space-between">
             <Box display="flex" alignItems="center">
-              <Person sx={{ fontSize: 40, color: 'white', mr: 2 }} />
+              <Person sx={{ fontSize: 50, color: 'white', mr: 3 }} />
               <Box>
-                <Typography variant="h4" fontWeight={800} color="white">
-                  Espace Client
+                <Typography 
+                  variant="h3" 
+                  sx={{ 
+                    fontWeight: 800, 
+                    background: 'linear-gradient(45deg, white, rgba(255, 255, 255, 0.8))',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}
+                >
+                  👤 Espace Client
                 </Typography>
-                <Typography variant="h6" color="white" sx={{ opacity: 0.9 }}>
-                  Bienvenue {user?.name} !
+                <Typography 
+                  variant="h6" 
+                  sx={{ 
+                    color: 'rgba(255, 255, 255, 0.9)', 
+                    fontWeight: 600 
+                  }}
+                >
+                  Bienvenue {user?.name} ! ✨
                 </Typography>
               </Box>
             </Box>
@@ -293,79 +355,314 @@ const ClientSpace = () => {
               variant="contained"
               onClick={() => navigate('/')}
               sx={{ 
-                bgcolor: 'white', 
-                color: 'primary.main', 
-                '&:hover': { bgcolor: 'grey.100' },
+                background: `linear-gradient(45deg, ${VIOLET_BLUE}, ${VIOLET_PURPLE})`,
+                color: 'white',
+                fontWeight: 700,
                 borderRadius: 3,
-                px: 3
+                px: 4,
+                py: 1.5,
+                boxShadow: `0 8px 25px rgba(102, 126, 234, 0.4)`,
+                transition: 'all 0.3s ease',
+                '&:hover': { 
+                  background: `linear-gradient(45deg, ${VIOLET_PURPLE}, ${VIOLET_BLUE})`,
+                  transform: 'translateY(-2px)',
+                  boxShadow: `0 12px 35px rgba(102, 126, 234, 0.6)`
+                }
               }}
             >
-              Nouvelle réservation
+              🚀 Nouvelle réservation
             </Button>
           </Box>
         </Paper>
 
         {/* Messages */}
         {error && (
-          <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError('')}>
+          <Alert 
+            severity="error" 
+            sx={{ 
+              mb: 3,
+              background: `${ACCENT_RED}10`,
+              border: `2px solid ${ACCENT_RED}30`,
+              borderRadius: 3,
+              backdropFilter: 'blur(10px)',
+              '& .MuiAlert-icon': { color: ACCENT_RED },
+              '& .MuiAlert-message': { color: ACCENT_RED, fontWeight: 600 }
+            }} 
+            onClose={() => setError('')}
+          >
             {error}
           </Alert>
         )}
         {success && (
-          <Alert severity="success" sx={{ mb: 3 }} onClose={() => setSuccess('')}>
+          <Alert 
+            severity="success" 
+            sx={{ 
+              mb: 3,
+              background: 'rgba(76, 175, 80, 0.15)',
+              border: '2px solid rgba(76, 175, 80, 0.3)',
+              borderRadius: 3,
+              backdropFilter: 'blur(10px)',
+              '& .MuiAlert-icon': { color: 'success.main' },
+              '& .MuiAlert-message': { color: 'success.main', fontWeight: 600 }
+            }} 
+            onClose={() => setSuccess('')}
+          >
             {success}
           </Alert>
         )}
 
         {/* Statistiques rapides */}
         <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid item xs={12} md={3}>
-            <Card sx={{ textAlign: 'center', borderRadius: 3 }}>
-              <CardContent>
-                <LocalActivity sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
-                <Typography variant="h4" fontWeight={700}>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card 
+              sx={{ 
+                textAlign: 'center', 
+                borderRadius: 3,
+                background: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                boxShadow: '0 8px 32px rgba(30, 60, 114, 0.12)',
+                transition: 'all 0.3s ease',
+                height: '160px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  boxShadow: '0 12px 40px rgba(30, 60, 114, 0.18)',
+                  background: 'rgba(255, 255, 255, 0.98)'
+                }
+              }}
+            >
+              <CardContent sx={{ p: 3 }}>
+                <Box
+                  sx={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: '50%',
+                    background: `linear-gradient(135deg, ${PRIMARY_COLOR}, ${SECONDARY_COLOR})`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto 12px auto',
+                    boxShadow: `0 4px 16px ${PRIMARY_COLOR}40`
+                  }}
+                >
+                  <LocalActivity sx={{ fontSize: 28, color: 'white' }} />
+                </Box>
+                <Typography 
+                  variant="h3" 
+                  sx={{ 
+                    fontWeight: 700, 
+                    background: `linear-gradient(135deg, ${PRIMARY_COLOR}, ${SECONDARY_COLOR})`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    mb: 1,
+                    lineHeight: 1.2
+                  }}
+                >
                   {reservations.length}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Total réservations
+                <Typography 
+                  variant="body2" 
+                  sx={{ 
+                    color: '#64748b', 
+                    fontWeight: 600,
+                    fontSize: '0.875rem'
+                  }}
+                >
+                  Réservations
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} md={3}>
-            <Card sx={{ textAlign: 'center', borderRadius: 3 }}>
-              <CardContent>
-                <CalendarToday sx={{ fontSize: 40, color: 'success.main', mb: 1 }} />
-                <Typography variant="h4" fontWeight={700} color="success.main">
+          <Grid item xs={12} sm={6} md={3}>
+            <Card 
+              sx={{ 
+                textAlign: 'center', 
+                borderRadius: 3,
+                background: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                boxShadow: '0 8px 32px rgba(102, 126, 234, 0.12)',
+                transition: 'all 0.3s ease',
+                height: '160px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  boxShadow: '0 12px 40px rgba(102, 126, 234, 0.18)',
+                  background: 'rgba(255, 255, 255, 0.98)'
+                }
+              }}
+            >
+              <CardContent sx={{ p: 3 }}>
+                <Box
+                  sx={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: '50%',
+                    background: `linear-gradient(135deg, ${VIOLET_BLUE}, ${VIOLET_PURPLE})`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto 12px auto',
+                    boxShadow: `0 4px 16px ${VIOLET_BLUE}40`
+                  }}
+                >
+                  <CalendarToday sx={{ fontSize: 28, color: 'white' }} />
+                </Box>
+                <Typography 
+                  variant="h3" 
+                  sx={{ 
+                    fontWeight: 700, 
+                    background: `linear-gradient(135deg, ${VIOLET_BLUE}, ${VIOLET_PURPLE})`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    mb: 1,
+                    lineHeight: 1.2
+                  }}
+                >
                   {reservations.filter(r => r.status === 'confirmed').length}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography 
+                  variant="body2" 
+                  sx={{ 
+                    color: '#64748b', 
+                    fontWeight: 600,
+                    fontSize: '0.875rem'
+                  }}
+                >
                   Confirmées
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} md={3}>
-            <Card sx={{ textAlign: 'center', borderRadius: 3 }}>
-              <CardContent>
-                <Event sx={{ fontSize: 40, color: 'warning.main', mb: 1 }} />
-                <Typography variant="h4" fontWeight={700} color="warning.main">
+          <Grid item xs={12} sm={6} md={3}>
+            <Card 
+              sx={{ 
+                textAlign: 'center', 
+                borderRadius: 3,
+                background: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                boxShadow: '0 8px 32px rgba(102, 126, 234, 0.12)',
+                transition: 'all 0.3s ease',
+                height: '160px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  boxShadow: '0 12px 40px rgba(102, 126, 234, 0.18)',
+                  background: 'rgba(255, 255, 255, 0.98)'
+                }
+              }}
+            >
+              <CardContent sx={{ p: 3 }}>
+                <Box
+                  sx={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: '50%',
+                    background: `linear-gradient(135deg, ${VIOLET_BLUE}, ${VIOLET_PURPLE})`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto 12px auto',
+                    boxShadow: `0 4px 16px ${VIOLET_BLUE}40`,
+                    opacity: 0.8
+                  }}
+                >
+                  <Event sx={{ fontSize: 28, color: 'white' }} />
+                </Box>
+                <Typography 
+                  variant="h3" 
+                  sx={{ 
+                    fontWeight: 700, 
+                    background: `linear-gradient(135deg, ${VIOLET_BLUE}, ${VIOLET_PURPLE})`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    mb: 1,
+                    lineHeight: 1.2,
+                    opacity: 0.8
+                  }}
+                >
                   {reservations.filter(r => r.status === 'pending').length}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography 
+                  variant="body2" 
+                  sx={{ 
+                    color: '#64748b', 
+                    fontWeight: 600,
+                    fontSize: '0.875rem'
+                  }}
+                >
                   En attente
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} md={3}>
-            <Card sx={{ textAlign: 'center', borderRadius: 3 }}>
-              <CardContent>
-                <Cancel sx={{ fontSize: 40, color: 'error.main', mb: 1 }} />
-                <Typography variant="h4" fontWeight={700} color="error.main">
+          <Grid item xs={12} sm={6} md={3}>
+            <Card 
+              sx={{ 
+                textAlign: 'center', 
+                borderRadius: 3,
+                background: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                boxShadow: `0 8px 32px ${ACCENT_RED}12`,
+                transition: 'all 0.3s ease',
+                height: '160px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  boxShadow: `0 12px 40px ${ACCENT_RED}18`,
+                  background: 'rgba(255, 255, 255, 0.98)'
+                }
+              }}
+            >
+              <CardContent sx={{ p: 3 }}>
+                <Box
+                  sx={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: '50%',
+                    background: ACCENT_RED,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto 12px auto',
+                    boxShadow: `0 4px 16px ${ACCENT_RED}40`
+                  }}
+                >
+                  <Cancel sx={{ fontSize: 28, color: 'white' }} />
+                </Box>
+                <Typography 
+                  variant="h3" 
+                  sx={{ 
+                    fontWeight: 700, 
+                    color: ACCENT_RED,
+                    mb: 1,
+                    lineHeight: 1.2
+                  }}
+                >
                   {reservations.filter(r => r.status === 'cancelled').length}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography 
+                  variant="body2" 
+                  sx={{ 
+                    color: '#64748b', 
+                    fontWeight: 600,
+                    fontSize: '0.875rem'
+                  }}
+                >
                   Annulées
                 </Typography>
               </CardContent>
@@ -374,24 +671,58 @@ const ClientSpace = () => {
         </Grid>
 
         {/* Liste des réservations */}
-        <Card sx={{ borderRadius: 3 }}>
+        <Card 
+          sx={{ 
+            borderRadius: 3,
+            background: 'rgba(255, 255, 255, 0.95)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            boxShadow: '0 8px 32px rgba(30, 60, 114, 0.08)'
+          }}
+        >
           <CardContent sx={{ p: 0 }}>
-            <Box sx={{ p: 3, pb: 0 }}>
-              <Typography variant="h5" fontWeight={700}>
+            <Box sx={{ p: 4, pb: 2 }}>
+              <Typography 
+                variant="h4" 
+                sx={{ 
+                  fontWeight: 700,
+                  background: `linear-gradient(135deg, ${PRIMARY_COLOR}, ${SECONDARY_COLOR})`,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
                 📋 Mes Réservations
               </Typography>
             </Box>
             
             {reservations.length === 0 ? (
-              <Box textAlign="center" py={6}>
-                <LocalActivity sx={{ fontSize: 80, color: 'text.secondary', mb: 2 }} />
-                <Typography variant="h6" color="text.secondary" mb={2}>
+              <Box textAlign="center" py={8}>
+                <LocalActivity sx={{ fontSize: 80, color: '#e2e8f0', mb: 3 }} />
+                <Typography 
+                  variant="h6" 
+                  sx={{ color: '#64748b', mb: 2, fontWeight: 600 }}
+                >
                   Aucune réservation trouvée
                 </Typography>
                 <Button
                   variant="contained"
                   onClick={() => navigate('/')}
-                  sx={{ borderRadius: 3 }}
+                  sx={{ 
+                    borderRadius: 3,
+                    background: `linear-gradient(135deg, ${VIOLET_BLUE}, ${VIOLET_PURPLE})`,
+                    color: 'white',
+                    fontWeight: 600,
+                    px: 4,
+                    py: 1.5,
+                    textTransform: 'none',
+                    boxShadow: `0 4px 16px ${VIOLET_BLUE}40`,
+                    '&:hover': {
+                      background: `linear-gradient(135deg, ${VIOLET_PURPLE}, ${VIOLET_BLUE})`,
+                      transform: 'translateY(-2px)',
+                      boxShadow: `0 6px 20px ${VIOLET_BLUE}50`
+                    }
+                  }}
                 >
                   Faire une réservation
                 </Button>
@@ -400,78 +731,143 @@ const ClientSpace = () => {
               <TableContainer>
                 <Table>
                   <TableHead>
-                    <TableRow sx={{ bgcolor: 'grey.50' }}>
-                      <TableCell><strong>Service</strong></TableCell>
-                      <TableCell><strong>Date</strong></TableCell>
-                      <TableCell><strong>Personnes</strong></TableCell>
-                      <TableCell><strong>Prix</strong></TableCell>
-                      <TableCell><strong>Statut</strong></TableCell>
-                      <TableCell><strong>Actions</strong></TableCell>
+                    <TableRow 
+                      sx={{ 
+                        background: '#f8fafc'
+                      }}
+                    >
+                      <TableCell sx={{ color: '#374151', fontWeight: 700, fontSize: '0.875rem', py: 2 }}>
+                        Service
+                      </TableCell>
+                      <TableCell sx={{ color: '#374151', fontWeight: 700, fontSize: '0.875rem', py: 2 }}>
+                        Date
+                      </TableCell>
+                      <TableCell sx={{ color: '#374151', fontWeight: 700, fontSize: '0.875rem', py: 2 }}>
+                        Personnes
+                      </TableCell>
+                      <TableCell sx={{ color: '#374151', fontWeight: 700, fontSize: '0.875rem', py: 2 }}>
+                        Prix
+                      </TableCell>
+                      <TableCell sx={{ color: '#374151', fontWeight: 700, fontSize: '0.875rem', py: 2 }}>
+                        Statut
+                      </TableCell>
+                      <TableCell sx={{ color: '#374151', fontWeight: 700, fontSize: '0.875rem', py: 2 }}>
+                        Actions
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {reservations.map((reservation) => (
-                      <TableRow key={reservation.id} hover>
-                        <TableCell>
+                    {currentReservations.map((reservation) => (
+                      <TableRow 
+                        key={reservation.id} 
+                        sx={{
+                          '&:hover': { 
+                            backgroundColor: '#f8fafc'
+                          },
+                          borderBottom: '1px solid #e2e8f0'
+                        }}
+                      >
+                        <TableCell sx={{ py: 3 }}>
                           <Box>
-                            <Typography variant="subtitle2" fontWeight={600}>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#1f2937', mb: 0.5 }}>
                               {reservation.service?.title}
                             </Typography>
-                            <Typography variant="caption" color="text.secondary">
+                            <Typography variant="body2" sx={{ color: '#6b7280' }}>
                               {reservation.service?.agency?.name}
                             </Typography>
                           </Box>
                         </TableCell>
-                        <TableCell>
+                        <TableCell sx={{ py: 3 }}>
                           <Box>
-                            <Typography variant="body2">
+                            <Typography variant="body1" sx={{ color: '#1f2937', fontWeight: 600, mb: 0.5 }}>
                               {new Date(reservation.reservation_date).toLocaleDateString('fr-FR')}
                             </Typography>
-                            <Typography variant="caption" color="text.secondary">
+                            <Typography variant="body2" sx={{ color: '#6b7280' }}>
                               {new Date(reservation.start_time).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'})}
                             </Typography>
                           </Box>
                         </TableCell>
-                        <TableCell>{reservation.number_of_people}</TableCell>
-                        <TableCell>
-                          <Typography variant="subtitle2" fontWeight={600} color="primary.main">
+                        <TableCell sx={{ py: 3 }}>
+                          <Typography variant="body1" sx={{ color: '#1f2937', fontWeight: 600 }}>
+                            {reservation.number_of_people}
+                          </Typography>
+                        </TableCell>
+                        <TableCell sx={{ py: 3 }}>
+                          <Typography 
+                            variant="h6" 
+                            sx={{ 
+                              fontWeight: 700, 
+                              background: `linear-gradient(135deg, ${VIOLET_BLUE}, ${VIOLET_PURPLE})`,
+                              WebkitBackgroundClip: 'text',
+                              WebkitTextFillColor: 'transparent',
+                              backgroundClip: 'text'
+                            }}
+                          >
                             {reservation.total_price}€
                           </Typography>
                         </TableCell>
-                        <TableCell>
+                        <TableCell sx={{ py: 3 }}>
                           <Chip 
                             label={getStatusText(reservation.status)}
                             color={getStatusColor(reservation.status)}
                             size="small"
+                            sx={{ 
+                              fontWeight: 600,
+                              borderRadius: 2
+                            }}
                           />
                         </TableCell>
-                        <TableCell>
+                        <TableCell sx={{ py: 3 }}>
                           <Box display="flex" gap={1}>
                             <IconButton
                               size="small"
                               onClick={() => generatePDF(reservation)}
-                              color="primary"
+                              sx={{
+                                color: VIOLET_BLUE,
+                                backgroundColor: `${VIOLET_BLUE}10`,
+                                borderRadius: 2,
+                                '&:hover': {
+                                  backgroundColor: `${VIOLET_BLUE}20`,
+                                  transform: 'scale(1.1)'
+                                }
+                              }}
                               title="Télécharger PDF"
                             >
-                              <Download />
+                              <Download fontSize="small" />
                             </IconButton>
                             {canModifyOrCancel(reservation.reservation_date) && reservation.status !== 'cancelled' && (
                               <>
                                 <IconButton
                                   size="small"
                                   onClick={() => handleEdit(reservation)}
-                                  color="warning"
+                                  sx={{
+                                    color: '#f59e0b',
+                                    backgroundColor: '#fef3c7',
+                                    borderRadius: 2,
+                                    '&:hover': {
+                                      backgroundColor: '#fde68a',
+                                      transform: 'scale(1.1)'
+                                    }
+                                  }}
                                   title="Modifier"
                                 >
-                                  <Edit />
+                                  <Edit fontSize="small" />
                                 </IconButton>
                                 <IconButton
                                   size="small"
                                   onClick={() => handleCancelRequest(reservation)}
-                                  color="error"
+                                  sx={{
+                                    color: ACCENT_RED,
+                                    backgroundColor: `${ACCENT_RED}10`,
+                                    borderRadius: 2,
+                                    '&:hover': {
+                                      backgroundColor: `${ACCENT_RED}20`,
+                                      transform: 'scale(1.1)'
+                                    }
+                                  }}
                                   title="Annuler"
                                 >
-                                  <Cancel />
+                                  <Cancel fontSize="small" />
                                 </IconButton>
                               </>
                             )}
@@ -483,13 +879,86 @@ const ClientSpace = () => {
                 </Table>
               </TableContainer>
             )}
+            
+            {/* Pagination */}
+            {reservations.length > reservationsPerPage && (
+              <Box 
+                sx={{ 
+                  display: 'flex', 
+                  justifyContent: 'center', 
+                  alignItems: 'center',
+                  p: 3,
+                  borderTop: '1px solid #e5e7eb'
+                }}
+              >
+                <Pagination
+                  count={totalPages}
+                  page={currentPage}
+                  onChange={handlePageChange}
+                  color="primary"
+                  size="large"
+                  showFirstButton
+                  showLastButton
+                  sx={{
+                    '& .MuiPaginationItem-root': {
+                      fontWeight: 600,
+                      borderRadius: 2,
+                      '&.Mui-selected': {
+                        background: `linear-gradient(135deg, ${VIOLET_BLUE}, ${VIOLET_PURPLE})`,
+                        color: 'white',
+                        '&:hover': {
+                          background: `linear-gradient(135deg, ${VIOLET_PURPLE}, ${VIOLET_BLUE})`
+                        }
+                      },
+                      '&:hover': {
+                        backgroundColor: '#f3f4f6'
+                      }
+                    }
+                  }}
+                />
+                <Typography 
+                  variant="body2" 
+                  sx={{ 
+                    ml: 3, 
+                    color: '#6b7280',
+                    fontWeight: 500
+                  }}
+                >
+                  {startIndex + 1}-{Math.min(endIndex, reservations.length)} sur {reservations.length} réservations
+                </Typography>
+              </Box>
+            )}
           </CardContent>
         </Card>
 
         {/* Dialog de modification */}
-        <Dialog open={editDialog} onClose={() => setEditDialog(false)} maxWidth="md" fullWidth>
-          <DialogTitle>Modifier la réservation</DialogTitle>
-          <DialogContent>
+        <Dialog 
+          open={editDialog} 
+          onClose={() => setEditDialog(false)} 
+          maxWidth="md" 
+          fullWidth
+          PaperProps={{
+            sx: {
+              background: 'rgba(255, 255, 255, 0.95)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              borderRadius: 3,
+              boxShadow: '0 8px 32px rgba(30, 60, 114, 0.12)'
+            }
+          }}
+        >
+          <DialogTitle 
+            sx={{ 
+              color: '#1f2937', 
+              fontWeight: 700, 
+              fontSize: '1.25rem',
+              borderBottom: '1px solid #e5e7eb',
+              pb: 2
+            }}
+          >
+            Modifier la réservation
+          </DialogTitle>
+          <DialogContent sx={{ p: 3 }}>
             <Grid container spacing={2} sx={{ mt: 1 }}>
               <Grid item xs={12} md={6}>
                 <TextField
@@ -499,6 +968,19 @@ const ClientSpace = () => {
                   value={editData.reservation_date || ''}
                   onChange={(e) => setEditData({...editData, reservation_date: e.target.value})}
                   InputLabelProps={{ shrink: true }}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                      borderRadius: 2,
+                      '& fieldset': { borderColor: '#d1d5db' },
+                      '&:hover fieldset': { borderColor: '#9ca3af' },
+                      '&.Mui-focused fieldset': { borderColor: VIOLET_BLUE, borderWidth: 2 }
+                    },
+                    '& .MuiInputLabel-root': { 
+                      color: '#6b7280',
+                      '&.Mui-focused': { color: VIOLET_BLUE }
+                    }
+                  }}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -509,6 +991,19 @@ const ClientSpace = () => {
                   value={editData.start_time || ''}
                   onChange={(e) => setEditData({...editData, start_time: e.target.value})}
                   InputLabelProps={{ shrink: true }}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                      borderRadius: 2,
+                      '& fieldset': { borderColor: '#d1d5db' },
+                      '&:hover fieldset': { borderColor: '#9ca3af' },
+                      '&.Mui-focused fieldset': { borderColor: VIOLET_BLUE, borderWidth: 2 }
+                    },
+                    '& .MuiInputLabel-root': { 
+                      color: '#6b7280',
+                      '&.Mui-focused': { color: VIOLET_BLUE }
+                    }
+                  }}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -519,6 +1014,19 @@ const ClientSpace = () => {
                   value={editData.number_of_people || ''}
                   onChange={(e) => setEditData({...editData, number_of_people: parseInt(e.target.value)})}
                   inputProps={{ min: 1, max: 20 }}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                      borderRadius: 2,
+                      '& fieldset': { borderColor: '#d1d5db' },
+                      '&:hover fieldset': { borderColor: '#9ca3af' },
+                      '&.Mui-focused fieldset': { borderColor: VIOLET_BLUE, borderWidth: 2 }
+                    },
+                    '& .MuiInputLabel-root': { 
+                      color: '#6b7280',
+                      '&.Mui-focused': { color: VIOLET_BLUE }
+                    }
+                  }}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -527,6 +1035,19 @@ const ClientSpace = () => {
                   label="Téléphone"
                   value={editData.guest_phone || ''}
                   onChange={(e) => setEditData({...editData, guest_phone: e.target.value})}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                      borderRadius: 2,
+                      '& fieldset': { borderColor: '#d1d5db' },
+                      '&:hover fieldset': { borderColor: '#9ca3af' },
+                      '&.Mui-focused fieldset': { borderColor: VIOLET_BLUE, borderWidth: 2 }
+                    },
+                    '& .MuiInputLabel-root': { 
+                      color: '#6b7280',
+                      '&.Mui-focused': { color: VIOLET_BLUE }
+                    }
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -537,27 +1058,112 @@ const ClientSpace = () => {
                   rows={3}
                   value={editData.special_requests || ''}
                   onChange={(e) => setEditData({...editData, special_requests: e.target.value})}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                      borderRadius: 2,
+                      '& fieldset': { borderColor: '#d1d5db' },
+                      '&:hover fieldset': { borderColor: '#9ca3af' },
+                      '&.Mui-focused fieldset': { borderColor: VIOLET_BLUE, borderWidth: 2 }
+                    },
+                    '& .MuiInputLabel-root': { 
+                      color: '#6b7280',
+                      '&.Mui-focused': { color: VIOLET_BLUE }
+                    }
+                  }}
                 />
               </Grid>
             </Grid>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setEditDialog(false)}>Annuler</Button>
-            <Button onClick={handleConfirmEdit} variant="contained">Modifier</Button>
+          <DialogActions sx={{ p: 3, borderTop: '1px solid #e5e7eb' }}>
+            <Button 
+              onClick={() => setEditDialog(false)}
+              sx={{ 
+                color: '#6b7280',
+                fontWeight: 600,
+                textTransform: 'none',
+                '&:hover': { backgroundColor: '#f3f4f6' }
+              }}
+            >
+              Annuler
+            </Button>
+            <Button 
+              onClick={handleConfirmEdit} 
+              variant="contained"
+              sx={{
+                background: `linear-gradient(135deg, ${VIOLET_BLUE}, ${VIOLET_PURPLE})`,
+                color: 'white',
+                fontWeight: 600,
+                textTransform: 'none',
+                borderRadius: 2,
+                px: 3,
+                '&:hover': {
+                  background: `linear-gradient(135deg, ${VIOLET_PURPLE}, ${VIOLET_BLUE})`
+                }
+              }}
+            >
+              Modifier
+            </Button>
           </DialogActions>
         </Dialog>
 
         {/* Dialog de confirmation d'annulation */}
-        <Dialog open={cancelDialog} onClose={() => setCancelDialog(false)}>
-          <DialogTitle>Confirmer l'annulation</DialogTitle>
-          <DialogContent>
-            <Typography>
+        <Dialog 
+          open={cancelDialog} 
+          onClose={() => setCancelDialog(false)}
+          PaperProps={{
+            sx: {
+              background: 'rgba(255, 255, 255, 0.95)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              borderRadius: 3,
+              boxShadow: '0 8px 32px rgba(30, 60, 114, 0.12)'
+            }
+          }}
+        >
+          <DialogTitle 
+            sx={{ 
+              color: '#1f2937', 
+              fontWeight: 700, 
+              fontSize: '1.25rem',
+              borderBottom: '1px solid #e5e7eb',
+              pb: 2
+            }}
+          >
+            Confirmer l'annulation
+          </DialogTitle>
+          <DialogContent sx={{ p: 3 }}>
+            <Typography sx={{ color: '#374151', fontSize: '1rem', lineHeight: 1.6 }}>
               Êtes-vous sûr de vouloir annuler cette réservation ?
             </Typography>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setCancelDialog(false)}>Non, garder</Button>
-            <Button onClick={handleConfirmCancel} variant="contained" color="error">
+          <DialogActions sx={{ p: 3, borderTop: '1px solid #e5e7eb' }}>
+            <Button 
+              onClick={() => setCancelDialog(false)}
+              sx={{ 
+                color: '#6b7280',
+                fontWeight: 600,
+                textTransform: 'none',
+                '&:hover': { backgroundColor: '#f3f4f6' }
+              }}
+            >
+              Non, garder
+            </Button>
+            <Button 
+              onClick={handleConfirmCancel} 
+              variant="contained"
+              sx={{
+                background: ACCENT_RED,
+                color: 'white',
+                fontWeight: 600,
+                textTransform: 'none',
+                borderRadius: 2,
+                px: 3,
+                '&:hover': {
+                  background: '#dc2626'
+                }
+              }}
+            >
               Oui, annuler
             </Button>
           </DialogActions>
