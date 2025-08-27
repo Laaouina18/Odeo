@@ -16,14 +16,14 @@ import {
   ListItemIcon,
   ListItemText,
   Divider,
-  TextField,
-  InputAdornment,
   Avatar,
-  Badge
+  Badge,
+  Chip,
+  Fade,
+  Paper
 } from '@mui/material';
 import {
   Menu as MenuIcon,
-  Search as SearchIcon,
   Home as HomeIcon,
   Dashboard as DashboardIcon,
   Login as LoginIcon,
@@ -32,7 +32,11 @@ import {
   Person as PersonIcon,
   Business as BusinessIcon,
   AdminPanelSettings as AdminIcon,
-  Close as CloseIcon
+  AccountCircle as AccountCircleIcon,
+  Notifications as NotificationsIcon,
+  Settings as SettingsIcon,
+  KeyboardArrowDown as ArrowDownIcon,
+  Apps as AppsIcon
 } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -51,9 +55,16 @@ const Navbar = () => {
   
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // Effet de scroll pour changer l'apparence de la navbar
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleLogout = () => {
     clearUserStorage();
@@ -75,36 +86,10 @@ const Navbar = () => {
     setMobileDrawerOpen(!mobileDrawerOpen);
   };
 
-  // Recherche en temps réel
-  const handleSearch = async (query) => {
-    setSearchQuery(query);
-    
-    if (query.trim().length > 2) {
-      try {
-        const response = await apiFetch(`/services/search?q=${encodeURIComponent(query)}`);
-        setSearchResults(response.data || []);
-        setShowSearchResults(true);
-      } catch (error) {
-        console.error('Erreur de recherche:', error);
-        setSearchResults([]);
-      }
-    } else {
-      setSearchResults([]);
-      setShowSearchResults(false);
-    }
-  };
-
-  const handleSearchResultClick = (serviceId) => {
-    navigate(`/services/${serviceId}`);
-    setShowSearchResults(false);
-    setSearchQuery('');
-  };
-
   const menuItems = [
     { text: 'Accueil', icon: <HomeIcon />, path: '/' },
     ...(authenticated ? [
       ...(user?.role === 'client' ? [
-
         { text: 'Mon Espace', icon: <PersonIcon />, path: '/client-space' }
       ] : []),
       ...(user?.role === 'agency' ? [
@@ -119,92 +104,99 @@ const Navbar = () => {
     ])
   ];
 
+  // Logo moderne avec icône
+  const LogoComponent = () => (
+    <Box 
+      component={Link}
+      to="/"
+      sx={{ 
+        display: 'flex',
+        alignItems: 'center',
+        textDecoration: 'none',
+        cursor: 'pointer',
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        '&:hover': {
+          transform: 'scale(1.02)'
+        }
+      }}
+    >
+      {/* Icône moderne */}
+      <Box
+        sx={{
+          width: 42,
+          height: 42,
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          mr: 2,
+          position: 'relative',
+          overflow: 'hidden',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%)',
+            opacity: 0,
+            transition: 'opacity 0.3s ease',
+          },
+          '&:hover::before': {
+            opacity: 1,
+          }
+        }}
+      >
+        <AppsIcon sx={{ color: 'white', fontSize: '1.4rem', fontWeight: 'bold' }} />
+      </Box>
+      <Typography 
+        variant={isMobile ? "h6" : "h5"}
+        sx={{ 
+          fontWeight: 900,
+          letterSpacing: 2,
+          background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+          backgroundClip: 'text',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          fontFamily: '"Inter", "Helvetica", "Arial", sans-serif'
+        }}
+      >
+        ODEO
+      </Typography>
+    </Box>
+  );
+
   return (
     <>
       <AppBar 
         position="fixed" 
+        elevation={0}
         sx={{ 
-          background: 'linear-gradient(135deg, rgb(129, 39, 85) 0%, rgba(129, 39, 85, 0.9) 100%)',
-          boxShadow: '0 4px 20px rgba(129, 39, 85, 0.3)',
+          background: isScrolled 
+            ? 'rgba(255, 255, 255, 0.95)'
+            : 'rgba(255, 255, 255, 0.98)',
           backdropFilter: 'blur(20px)',
-          zIndex: theme.zIndex.drawer + 1
+          borderBottom: isScrolled 
+            ? '1px solid rgba(0, 0, 0, 0.08)'
+            : '1px solid rgba(0, 0, 0, 0.04)',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          zIndex: theme.zIndex.drawer + 1,
         }}
       >
-        <Toolbar sx={{ px: { xs: 1, md: 3 } }}>
+        <Toolbar sx={{ 
+          px: { xs: 2, md: 4 }, 
+          height: 70,
+          minHeight: '70px !important'
+        }}>
           {/* Logo */}
-          <Typography 
-            variant={isMobile ? "h6" : "h5"}
-            component={Link}
-            to="/"
-            sx={{ 
-              flexGrow: 0,
-              mr: 3,
-              fontWeight: 800,
-              letterSpacing: 1.2,
-              background: 'linear-gradient(45deg, #ffffff, #f8f9fa)',
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              textShadow: '0 2px 4px rgba(0,0,0,0.1)',
-              textDecoration: 'none',
-              cursor: 'pointer'
-            }}
-          >
-            🏛️ ODEO
-          </Typography>
+          <LogoComponent />
 
-          {/* Barre de recherche - Desktop */}
-          {!isMobile && (
-            <Box sx={{ position: 'relative', flexGrow: 1, maxWidth: 400, mx: 3 }}>
-          
-              
-              {/* Résultats de recherche */}
-              {showSearchResults && searchResults.length > 0 && (
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    top: '100%',
-                    left: 0,
-                    right: 0,
-                    backgroundColor: 'white',
-                    borderRadius: 2,
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
-                    zIndex: 1000,
-                    maxHeight: 300,
-                    overflow: 'auto',
-                    mt: 1
-                  }}
-                >
-                  {searchResults.slice(0, 5).map((service) => (
-                    <Box
-                      key={service.id}
-                      sx={{
-                        p: 2,
-                        cursor: 'pointer',
-                        '&:hover': {
-                          backgroundColor: 'rgba(129, 39, 85, 0.05)'
-                        }
-                      }}
-                      onMouseDown={() => handleSearchResultClick(service.id)}
-                    >
-                      <Typography variant="subtitle2" color="rgb(129, 39, 85)" fontWeight={600}>
-                        {service.name}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {service.description?.substring(0, 80)}...
-                      </Typography>
-                    </Box>
-                  ))}
-                </Box>
-              )}
-            </Box>
-          )}
-
-          <Box sx={{ flexGrow: isMobile ? 1 : 0 }} />
+          <Box sx={{ flexGrow: 1 }} />
 
           {/* Navigation Desktop */}
           {!isMobile ? (
-            <Box display="flex" alignItems="center" gap={1}>
+            <Box display="flex" alignItems="center" gap={0.5}>
               <Button 
                 color="inherit" 
                 component={Link} 
@@ -214,42 +206,75 @@ const Navbar = () => {
                   textTransform: 'none',
                   fontSize: '0.95rem',
                   fontWeight: 600,
-                  px: 2,
-                  borderRadius: 2,
+                  px: 3,
+                  py: 1.5,
+                  color: '#1e3c72',
+                  minHeight: 44,
+                  position: 'relative',
+                  overflow: 'hidden',
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    opacity: 0,
+                    transition: 'opacity 0.3s ease',
+                    zIndex: -1,
+                  },
                   '&:hover': {
-                    backgroundColor: 'rgba(255,255,255,0.1)'
+                    color: 'white',
+                    '&::before': {
+                      opacity: 1,
+                    }
                   }
                 }}
               >
                 Accueil
               </Button>
               
-              
-              
               {authenticated ? (
                 <>
                   {user?.role === 'client' && (
-                    <>
-                 
-                      <Button 
-                        color="inherit" 
-                        component={Link} 
-                        to="/client-space"
-                        startIcon={<PersonIcon />}
-                        sx={{ 
-                          textTransform: 'none',
-                          fontSize: '0.95rem',
-                          fontWeight: 600,
-                          px: 2,
-                          borderRadius: 2,
-                          '&:hover': {
-                            backgroundColor: 'rgba(255,255,255,0.1)'
+                    <Button 
+                      color="inherit" 
+                      component={Link} 
+                      to="/client-space"
+                      startIcon={<PersonIcon />}
+                      sx={{ 
+                        textTransform: 'none',
+                        fontSize: '0.95rem',
+                        fontWeight: 600,
+                        px: 3,
+                        py: 1.5,
+                        color: '#1e3c72',
+                        minHeight: 44,
+                        position: 'relative',
+                        overflow: 'hidden',
+                        '&::before': {
+                          content: '""',
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                          opacity: 0,
+                          transition: 'opacity 0.3s ease',
+                          zIndex: -1,
+                        },
+                        '&:hover': {
+                          color: 'white',
+                          '&::before': {
+                            opacity: 1,
                           }
-                        }}
-                      >
-                        Mon Espace
-                      </Button>
-                    </>
+                        }
+                      }}
+                    >
+                      Mon Espace
+                    </Button>
                   )}
                   
                   {user?.role === 'agency' && (
@@ -262,10 +287,29 @@ const Navbar = () => {
                         textTransform: 'none',
                         fontSize: '0.95rem',
                         fontWeight: 600,
-                        px: 2,
-                        borderRadius: 2,
+                        px: 3,
+                        py: 1.5,
+                        color: '#1e3c72',
+                        minHeight: 44,
+                        position: 'relative',
+                        overflow: 'hidden',
+                        '&::before': {
+                          content: '""',
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                          opacity: 0,
+                          transition: 'opacity 0.3s ease',
+                          zIndex: -1,
+                        },
                         '&:hover': {
-                          backgroundColor: 'rgba(255,255,255,0.1)'
+                          color: 'white',
+                          '&::before': {
+                            opacity: 1,
+                          }
                         }
                       }}
                     >
@@ -283,10 +327,29 @@ const Navbar = () => {
                         textTransform: 'none',
                         fontSize: '0.95rem',
                         fontWeight: 600,
-                        px: 2,
-                        borderRadius: 2,
+                        px: 3,
+                        py: 1.5,
+                        color: '#1e3c72',
+                        minHeight: 44,
+                        position: 'relative',
+                        overflow: 'hidden',
+                        '&::before': {
+                          content: '""',
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                          opacity: 0,
+                          transition: 'opacity 0.3s ease',
+                          zIndex: -1,
+                        },
                         '&:hover': {
-                          backgroundColor: 'rgba(255,255,255,0.1)'
+                          color: 'white',
+                          '&::before': {
+                            opacity: 1,
+                          }
                         }
                       }}
                     >
@@ -294,29 +357,105 @@ const Navbar = () => {
                     </Button>
                   )}
                   
-                  {/* Profil utilisateur */}
+                  {/* Notifications */}
                   <IconButton
-                    size="large"
-                    edge="end"
-                    aria-label="account of current user"
-                    aria-controls="primary-search-account-menu"
-                    aria-haspopup="true"
+                    sx={{
+                      mx: 1,
+                      color: '#1e3c72',
+                      width: 44,
+                      height: 44,
+                      position: 'relative',
+                      overflow: 'hidden',
+                      '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%)',
+                        opacity: 0,
+                        transition: 'opacity 0.3s ease',
+                        zIndex: -1,
+                      },
+                      '&:hover': {
+                        color: 'white',
+                        '&::before': {
+                          opacity: 1,
+                        }
+                      }
+                    }}
+                  >
+                    <Badge 
+                      badgeContent={3} 
+                      sx={{
+                        '& .MuiBadge-badge': {
+                          backgroundColor: '#ff4757',
+                          color: 'white',
+                          fontWeight: 700
+                        }
+                      }}
+                    >
+                      <NotificationsIcon />
+                    </Badge>
+                  </IconButton>
+                  
+                  {/* Profil utilisateur */}
+                  <Button
+                    endIcon={<ArrowDownIcon />}
                     onClick={handleProfileMenuOpen}
-                    color="inherit"
-                    sx={{ ml: 1 }}
+                    sx={{ 
+                      textTransform: 'none',
+                      px: 2,
+                      py: 1,
+                      ml: 1,
+                      color: '#1e3c72',
+                      border: '2px solid #e1e8ed',
+                      minHeight: 44,
+                      position: 'relative',
+                      overflow: 'hidden',
+                      '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+                        opacity: 0,
+                        transition: 'opacity 0.3s ease',
+                        zIndex: -1,
+                      },
+                      '&:hover': {
+                        color: 'white',
+                        borderColor: '#1e3c72',
+                        '&::before': {
+                          opacity: 1,
+                        }
+                      }
+                    }}
                   >
                     <Avatar 
                       sx={{ 
-                        width: 32, 
-                        height: 32, 
-                        bgcolor: 'rgba(255,255,255,0.2)',
-                        fontSize: '1rem',
-                        fontWeight: 600
+                        width: 28, 
+                        height: 28, 
+                        mr: 1,
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        fontSize: '0.8rem',
+                        fontWeight: 800
                       }}
                     >
                       {user?.name?.charAt(0).toUpperCase()}
                     </Avatar>
-                  </IconButton>
+                    <Box sx={{ textAlign: 'left', display: { xs: 'none', lg: 'block' } }}>
+                      <Typography variant="body2" sx={{ fontWeight: 700, lineHeight: 1.2 }}>
+                        {user?.name}
+                      </Typography>
+                      <Typography variant="caption" sx={{ opacity: 0.7, textTransform: 'uppercase', fontSize: '0.7rem', fontWeight: 600 }}>
+                        {user?.role}
+                      </Typography>
+                    </Box>
+                  </Button>
                 </>
               ) : (
                 <>
@@ -329,10 +468,29 @@ const Navbar = () => {
                       textTransform: 'none',
                       fontSize: '0.95rem',
                       fontWeight: 600,
-                      px: 2,
-                      borderRadius: 2,
+                      px: 3,
+                      py: 1.5,
+                      color: '#1e3c72',
+                      minHeight: 44,
+                      position: 'relative',
+                      overflow: 'hidden',
+                      '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        opacity: 0,
+                        transition: 'opacity 0.3s ease',
+                        zIndex: -1,
+                      },
                       '&:hover': {
-                        backgroundColor: 'rgba(255,255,255,0.1)'
+                        color: 'white',
+                        '&::before': {
+                          opacity: 1,
+                        }
                       }
                     }}
                   >
@@ -342,18 +500,35 @@ const Navbar = () => {
                     color="inherit" 
                     component={Link} 
                     to="/register"
-                    variant="outlined"
                     startIcon={<PersonAddIcon />}
                     sx={{ 
                       textTransform: 'none',
                       fontSize: '0.95rem',
-                      fontWeight: 600,
-                      px: 2,
-                      borderRadius: 2,
-                      borderColor: 'white',
+                      fontWeight: 700,
+                      px: 3,
+                      py: 1.5,
+                      ml: 1,
+                      color: 'white',
+                      background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+                      minHeight: 44,
+                      position: 'relative',
+                      overflow: 'hidden',
+                      '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        opacity: 0,
+                        transition: 'opacity 0.3s ease',
+                        zIndex: -1,
+                      },
                       '&:hover': {
-                        borderColor: 'white',
-                        backgroundColor: 'rgba(255,255,255,0.1)'
+                        '&::before': {
+                          opacity: 1,
+                        }
                       }
                     }}
                   >
@@ -369,7 +544,32 @@ const Navbar = () => {
               aria-label="open drawer"
               edge="start"
               onClick={handleDrawerToggle}
-              sx={{ ml: 1 }}
+              sx={{ 
+                ml: 1,
+                color: '#1e3c72',
+                width: 44,
+                height: 44,
+                position: 'relative',
+                overflow: 'hidden',
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  opacity: 0,
+                  transition: 'opacity 0.3s ease',
+                  zIndex: -1,
+                },
+                '&:hover': {
+                  color: 'white',
+                  '&::before': {
+                    opacity: 1,
+                  }
+                }
+              }}
             >
               <MenuIcon />
             </IconButton>
@@ -391,26 +591,90 @@ const Navbar = () => {
         }}
         open={Boolean(anchorEl)}
         onClose={handleProfileMenuClose}
+        elevation={0}
         PaperProps={{
           sx: {
-            borderRadius: 2,
             mt: 1,
-            boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
-            minWidth: 200
+            minWidth: 260,
+            border: '2px solid #e1e8ed',
+            boxShadow: '0 25px 50px rgba(0, 0, 0, 0.15)',
+            overflow: 'hidden'
           }
         }}
       >
-        <Box sx={{ px: 2, py: 1.5, borderBottom: '1px solid rgba(0,0,0,0.1)' }}>
-          <Typography variant="subtitle2" fontWeight={600} color="rgb(129, 39, 85)">
-            {user?.name}
-          </Typography>
-          <Typography variant="caption" color="text.secondary">
-            {user?.email}
-          </Typography>
+        <Box sx={{ 
+          px: 3, 
+          py: 3, 
+          background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+          color: 'white'
+        }}>
+          <Box display="flex" alignItems="center" gap={2}>
+            <Avatar 
+              sx={{ 
+                width: 50, 
+                height: 50,
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                fontSize: '1.2rem',
+                fontWeight: 800,
+                border: '3px solid rgba(255,255,255,0.2)'
+              }}
+            >
+              {user?.name?.charAt(0).toUpperCase()}
+            </Avatar>
+            <Box>
+              <Typography variant="h6" fontWeight={800}>
+                {user?.name}
+              </Typography>
+              <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                {user?.email}
+              </Typography>
+              <Box
+                sx={{
+                  mt: 1,
+                  px: 2,
+                  py: 0.5,
+                  backgroundColor: 'rgba(255,255,255,0.2)',
+                  display: 'inline-block',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: 1
+                }}
+              >
+                {user?.role}
+              </Box>
+            </Box>
+          </Box>
         </Box>
-        <MenuItem onClick={handleLogout} sx={{ py: 1.5, color: 'error.main' }}>
-          <LogoutIcon sx={{ mr: 2 }} />
-          Déconnexion
+        
+        <MenuItem 
+          onClick={handleProfileMenuClose}
+          sx={{ 
+            py: 2, 
+            px: 3,
+            '&:hover': {
+              backgroundColor: '#f8f9fa'
+            }
+          }}
+        >
+          <SettingsIcon sx={{ mr: 2, color: '#1e3c72' }} />
+          <Typography fontWeight={600} color="#1e3c72">Paramètres</Typography>
+        </MenuItem>
+        
+        <Divider />
+        
+        <MenuItem 
+          onClick={handleLogout} 
+          sx={{ 
+            py: 2, 
+            px: 3,
+            '&:hover': {
+              backgroundColor: 'rgba(255, 77, 79, 0.08)'
+            }
+          }}
+        >
+          <LogoutIcon sx={{ mr: 2, color: '#ff4d4f' }} />
+          <Typography fontWeight={600} color="#ff4d4f">Déconnexion</Typography>
         </MenuItem>
       </Menu>
 
@@ -421,18 +685,64 @@ const Navbar = () => {
         onClose={handleDrawerToggle}
         PaperProps={{
           sx: {
-            width: 280,
-            backgroundColor: 'rgba(255,255,255,0.98)',
-            backdropFilter: 'blur(10px)'
+            width: 300,
+            backgroundColor: 'white',
+            borderLeft: '2px solid #e1e8ed'
           }
         }}
       >
-        <Toolbar />
-     
-        <Divider />
+        <Toolbar sx={{ minHeight: '70px !important' }} />
+        
+        {/* En-tête mobile */}
+        {authenticated && (
+          <Box sx={{ 
+            p: 3, 
+            background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+            color: 'white',
+            mb: 2
+          }}>
+            <Box display="flex" alignItems="center" gap={2}>
+              <Avatar 
+                sx={{ 
+                  width: 60, 
+                  height: 60,
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  fontSize: '1.4rem',
+                  fontWeight: 800,
+                  border: '3px solid rgba(255,255,255,0.2)'
+                }}
+              >
+                {user?.name?.charAt(0).toUpperCase()}
+              </Avatar>
+              <Box>
+                <Typography variant="h6" fontWeight={800}>
+                  {user?.name}
+                </Typography>
+                <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                  {user?.email}
+                </Typography>
+                <Box
+                  sx={{
+                    mt: 1,
+                    px: 2,
+                    py: 0.5,
+                    backgroundColor: 'rgba(255,255,255,0.2)',
+                    display: 'inline-block',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    letterSpacing: 1
+                  }}
+                >
+                  {user?.role}
+                </Box>
+              </Box>
+            </Box>
+          </Box>
+        )}
         
         {/* Menu Items */}
-        <List>
+        <List sx={{ px: 2 }}>
           {menuItems.map((item) => (
             <ListItem
               button
@@ -441,20 +751,40 @@ const Navbar = () => {
               to={item.path}
               onClick={() => setMobileDrawerOpen(false)}
               sx={{
-                py: 1.5,
+                py: 2,
+                px: 3,
+                mb: 1,
+                color: '#1e3c72',
+                position: 'relative',
+                overflow: 'hidden',
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  opacity: 0,
+                  transition: 'opacity 0.3s ease',
+                  zIndex: -1,
+                },
                 '&:hover': {
-                  backgroundColor: 'rgba(129, 39, 85, 0.05)'
+                  color: 'white',
+                  '&::before': {
+                    opacity: 1,
+                  }
                 }
               }}
             >
-              <ListItemIcon sx={{ color: 'rgb(129, 39, 85)' }}>
+              <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
                 {item.icon}
               </ListItemIcon>
               <ListItemText 
                 primary={item.text}
                 primaryTypographyProps={{
-                  fontWeight: 600,
-                  color: 'rgb(129, 39, 85)'
+                  fontWeight: 700,
+                  fontSize: '1rem'
                 }}
               />
             </ListItem>
@@ -462,17 +792,7 @@ const Navbar = () => {
           
           {authenticated && (
             <>
-              <Divider sx={{ my: 1 }} />
-              <ListItem>
-                <Box>
-                  <Typography variant="subtitle2" fontWeight={600} color="rgb(129, 39, 85)">
-                    {user?.name}
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    {user?.email}
-                  </Typography>
-                </Box>
-              </ListItem>
+              <Divider sx={{ my: 2 }} />
               <ListItem
                 button
                 onClick={() => {
@@ -480,16 +800,41 @@ const Navbar = () => {
                   setMobileDrawerOpen(false);
                 }}
                 sx={{ 
-                  color: 'error.main',
+                  py: 2,
+                  px: 3,
+                  color: '#ff4d4f',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%)',
+                    opacity: 0,
+                    transition: 'opacity 0.3s ease',
+                    zIndex: -1,
+                  },
                   '&:hover': {
-                    backgroundColor: 'rgba(244, 67, 54, 0.05)'
+                    color: 'white',
+                    '&::before': {
+                      opacity: 1,
+                    }
                   }
                 }}
               >
-                <ListItemIcon sx={{ color: 'error.main' }}>
+                <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
                   <LogoutIcon />
                 </ListItemIcon>
-                <ListItemText primary="Déconnexion" />
+                <ListItemText 
+                  primary="Déconnexion" 
+                  primaryTypographyProps={{
+                    fontWeight: 700,
+                    fontSize: '1rem'
+                  }}
+                />
               </ListItem>
             </>
           )}
@@ -497,7 +842,7 @@ const Navbar = () => {
       </Drawer>
 
       {/* Spacer pour compenser la navbar fixe */}
-      <Toolbar />
+      <Toolbar sx={{ minHeight: '70px !important' }} />
     </>
   );
 };
